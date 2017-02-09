@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum SwipeDurection
+public enum SwipeDirection
 {
     None = 0,
     Left = 1,
     Right = 2,
     Up = 4,
     Down = 8,
+    LeftUp = 5,
+    LeftDown = 9,
+    RightUp = 6,
+    RightDown = 10,
 }
 
 public class SwipeManager : MonoBehaviour {
@@ -16,7 +20,8 @@ public class SwipeManager : MonoBehaviour {
     private static SwipeManager instance;
     public static SwipeManager Instance { get { return instance; } }
 
-    public SwipeDurection Direction { set; get; }
+    public SwipeDirection HorDirection { set; get; }
+    public SwipeDirection VertDirection { set; get; }
 
     private Vector3 touchPosition;
     public float SwipeResistanceX = 50;
@@ -29,7 +34,8 @@ public class SwipeManager : MonoBehaviour {
 	
 	void Update () {
 
-        Direction = SwipeDurection.None;
+        HorDirection = SwipeDirection.None;
+        VertDirection = SwipeDirection.None;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -40,16 +46,18 @@ public class SwipeManager : MonoBehaviour {
         {
             Vector2 deltaSwipe = touchPosition - Input.mousePosition;
 
-            if(Mathf.Abs(deltaSwipe.x) > SwipeResistanceX)
+            if (Mathf.Abs(deltaSwipe.x) > SwipeResistanceX)
             {
-                Direction |= (deltaSwipe.x > 0) ? SwipeDurection.Left : SwipeDurection.Right;
+                HorDirection |= (deltaSwipe.x > 0) ? SwipeDirection.Left : SwipeDirection.Right;
             }
 
 
             if (Mathf.Abs(deltaSwipe.y) > SwipeResistanceY)
             {
-                Direction |= (deltaSwipe.y > 0) ? SwipeDurection.Down : SwipeDurection.Up;
+                VertDirection |= (deltaSwipe.y > 0) ? SwipeDirection.Down : SwipeDirection.Up;
             }
         }
-	}
+
+    }
+
 }
