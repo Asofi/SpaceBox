@@ -114,8 +114,9 @@ public class Player : MonoBehaviour {
             return;
 
         float newOrbit = CubeOrbitR;
-        newOrbit = CubeOrbitR - distanceToPrev;
+        //newOrbit = CubeOrbitR - distanceToPrev;
         UdpateCurOrbit(-1);
+        newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
@@ -128,8 +129,9 @@ public class Player : MonoBehaviour {
             return;
 
         float newOrbit = CubeOrbitR;
-        newOrbit = CubeOrbitR + distanceToNext;
+        //newOrbit = CubeOrbitR + distanceToNext;
         UdpateCurOrbit(1);
+        newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);

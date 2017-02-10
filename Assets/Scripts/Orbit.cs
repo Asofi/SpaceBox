@@ -108,13 +108,15 @@ public class Orbit : MonoBehaviour {
         }
         Radius = targetRadius;
         OrbitNum--;
+        float startPos = CurRadius;
         float t = 0;
-        while (t < 1)
+        while (t <= 1)
         {
             float newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
             CurRadius = newRadius;
-            t += 0.01f * Time.deltaTime;
-            if (t > 0.03)
+            t += 0.25f * Time.deltaTime;
+            print(t);
+            if (t > 0.4 && t <= 1)
                 t = 1;
             MoveOrbit(CurRadius);
             if (isContainsPlayer)
@@ -126,6 +128,7 @@ public class Orbit : MonoBehaviour {
         }
         SuperManager.Instance.PlanetManager.isRemoving = false;
         CurRadius = Radius;
+        MoveOrbit(CurRadius);
         //if (isContainsPlayer)
         //    SuperManager.Instance.Player.GetComponent<Player>().CubeOrbitR = CurRadius;
     }
