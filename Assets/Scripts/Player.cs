@@ -19,28 +19,22 @@ public class Player : MonoBehaviour {
     public float CubeOrbitR;
     private float distanceBetweenOrbits;
     public float ChangeOrbitSpeed = 3;
-    //public float distanceToNext;
-    //public float distanceToPrev;
 
     private Orbit curOrbitObj;
     private float minOrbit;
     public int curOrbitNum;
+    public bool IsOnOrbit;
 
-    // Use this for initialization
     void Start () {
-        distanceBetweenOrbits = SuperManager.Instance.PlanetManager.DistanceBetweenOrbits;
+        distanceBetweenOrbits = SuperManager.Instance.PlanetManager.DistanceToFirstOrbit;
         minOrbit = SuperManager.Instance.PlanetManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
         curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
-        //distanceToNext = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToNext;
-        //distanceToPrev = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToPrev;
-
     }
 	
-	// Update is called once per frame
 	void Update () {
 
         Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
@@ -104,22 +98,25 @@ public class Player : MonoBehaviour {
         curOrbitNum += dir;
         curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
         curOrbitObj.isContainsPlayer = true;
-        //distanceToNext = curOrbitObj.DistanceToNext;
-        //distanceToPrev = curOrbitObj.DistanceToPrev;
     }
 
     IEnumerator Move(Orbit targetOrbit)
     {
+        IsOnOrbit = false;
         float startPos = CubeOrbitR;
         float t = 0;
         while (t <= 1)
         {
             float newPos = Mathf.Lerp(startPos, targetOrbit.CurRadius, t);
             CubeOrbitR = newPos;
-            t += ChangeOrbitSpeed* Time.deltaTime;
-            transform.localPosition = new Vector3(0, 0, CubeOrbitR);
+            t += ChangeOrbitSpeed * Time.deltaTime;
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
             yield return null;
         }
+        print("Доводка в классе плеер до " + targetOrbit.CurRadius);
+        CubeOrbitR = targetOrbit.CurRadius;
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+        IsOnOrbit = true;
     }
 
     void MoveBack()
@@ -127,14 +124,11 @@ public class Player : MonoBehaviour {
         if (curOrbitNum == 0)
             return;
 
-        float newOrbit = CubeOrbitR;
-        //newOrbit = CubeOrbitR - distanceToPrev;
+        float newOrbit = CubeOrbitR;;
         UdpateCurOrbit(-1);
         newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
-        //CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
-        //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     } 
 
@@ -144,13 +138,10 @@ public class Player : MonoBehaviour {
             return;
 
         float newOrbit = CubeOrbitR;
-        //newOrbit = CubeOrbitR + distanceToNext;
         UdpateCurOrbit(1);
         newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
-        //CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
-        //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     }
 

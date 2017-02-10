@@ -46,8 +46,6 @@ public class Orbit : MonoBehaviour {
             return;
         }
 
-        //PlanetSize = Vector3.one * SuperManager.Instance.PlanetManager.GetPlanetSize();
-        //planet.transform.localPosition = Vector3.right * Radius;
         transform.Rotate(Vector3.up, Random.Range(0, 360));
     }
 
@@ -101,11 +99,6 @@ public class Orbit : MonoBehaviour {
 
     public IEnumerator StartMoveOrbits(float targetRadius)
     {
-        //if (isContainsPlayer)
-        //{
-        //    SuperManager.Instance.Player.distanceToNext = DistanceToNext;
-        //    SuperManager.Instance.Player.distanceToPrev = DistanceToPrev;
-        //}
         Radius = targetRadius;
         OrbitNum--;
         float startPos = CurRadius;
@@ -118,18 +111,22 @@ public class Orbit : MonoBehaviour {
             if (t > 0.4 && t <= 1)
                 t = 1;
             MoveOrbit(CurRadius);
-            if (isContainsPlayer)
+            if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
             {
                 SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
                 SuperManager.Instance.Player.GetComponent<Player>().CubeOrbitR = CurRadius;
             }
             yield return new WaitForEndOfFrame();
         }
+
         SuperManager.Instance.PlanetManager.isRemoving = false;
         CurRadius = Radius;
+        if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
+        {
+            print("Доводка в классе орьиты до " + CurRadius);
+            SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
+        }
         MoveOrbit(CurRadius);
-        //if (isContainsPlayer)
-        //    SuperManager.Instance.Player.GetComponent<Player>().CubeOrbitR = CurRadius;
     }
 
 
@@ -152,14 +149,4 @@ public class Orbit : MonoBehaviour {
 
         }
     }
-
-    //Vector3 RandomCircle(float radius)
-    //{
-    //    float ang = Random.value * 360;
-    //    Vector3 pos;
-    //    pos.x = radius * Mathf.Sin(ang * Mathf.Deg2Rad);
-    //    pos.y = 0;
-    //    pos.z = radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-    //    return pos;
-    //}
 }

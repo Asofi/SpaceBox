@@ -10,7 +10,7 @@ public class PlanetManager : MonoBehaviour {
     public float MinOrbitRadius;
     public int OrbitsCount;
     public float MaxRadius;
-    public float DistanceBetweenOrbits;
+    public float DistanceToFirstOrbit;
     public List<GameObject> Planets;
     public List<Orbit> Orbits;
     public float[] Radiuses;
@@ -20,7 +20,7 @@ public class PlanetManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-        MinOrbitRadius = Sun.localScale.x/2 + DistanceBetweenOrbits;
+        MinOrbitRadius = Sun.localScale.x/2 + DistanceToFirstOrbit;
         Orbits.Add(StartOrbit);
 	}
 
@@ -37,7 +37,6 @@ public class PlanetManager : MonoBehaviour {
         for(int i = 0; i< OrbitsCount; i ++)
         {
             float radius;
-            //radius = MinOrbitRadius + i * DistanceBetweenOrbits;
             radius = Radiuses[i];
 
             Transform orbit = Instantiate(OrbitPrefab);
@@ -76,19 +75,8 @@ public class PlanetManager : MonoBehaviour {
 
         if (orbitNum != 0 && orbitNum != Orbits.Count-1)
         {
-            print("Change");
             float buffNext = Orbits[orbitNum - 1].DistanceToNext;
-
-            //Orbits[orbitNum - 1].DistanceToNext = Orbits[orbitNum + 1].DistanceToPrev;
             Orbits[orbitNum + 1].DistanceToPrev = buffNext;
-        }
-        else if (orbitNum == 0)
-        {
-            //Orbits[orbitNum - 1].DistanceToNext = Orbits[orbitNum + 1].DistanceToPrev;
-        } 
-        else if (orbitNum == Orbits.Count - 1)
-        {
-            //Orbits[orbitNum + 1].DistanceToPrev = Orbits[orbitNum - 1].DistanceToNext;
         }
 
         isRemoving = true;
