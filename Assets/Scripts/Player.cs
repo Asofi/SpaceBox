@@ -18,8 +18,9 @@ public class Player : MonoBehaviour {
     private int size = 1;
     public float CubeOrbitR;
     private float distanceBetweenOrbits;
-    public float distanceToNext;
-    public float distanceToPrev;
+    public float ChangeOrbitSpeed = 3;
+    //public float distanceToNext;
+    //public float distanceToPrev;
 
     private Orbit curOrbitObj;
     private float minOrbit;
@@ -34,8 +35,8 @@ public class Player : MonoBehaviour {
         curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
-        distanceToNext = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToNext;
-        distanceToPrev = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToPrev;
+        //distanceToNext = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToNext;
+        //distanceToPrev = SuperManager.Instance.PlanetManager.StartOrbit.DistanceToPrev;
 
     }
 	
@@ -99,13 +100,26 @@ public class Player : MonoBehaviour {
 
     void UdpateCurOrbit(int dir)
     {
-        print("Update");
         curOrbitObj.isContainsPlayer = false;
         curOrbitNum += dir;
         curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
         curOrbitObj.isContainsPlayer = true;
-        distanceToNext = curOrbitObj.DistanceToNext;
-        distanceToPrev = curOrbitObj.DistanceToPrev;
+        //distanceToNext = curOrbitObj.DistanceToNext;
+        //distanceToPrev = curOrbitObj.DistanceToPrev;
+    }
+
+    IEnumerator Move(Orbit targetOrbit)
+    {
+        float startPos = CubeOrbitR;
+        float t = 0;
+        while (t <= 1)
+        {
+            float newPos = Mathf.Lerp(startPos, targetOrbit.CurRadius, t);
+            CubeOrbitR = newPos;
+            t += ChangeOrbitSpeed* Time.deltaTime;
+            transform.localPosition = new Vector3(0, 0, CubeOrbitR);
+            yield return null;
+        }
     }
 
     void MoveBack()
@@ -118,8 +132,9 @@ public class Player : MonoBehaviour {
         UdpateCurOrbit(-1);
         newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
-        CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+        StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
+        //CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
+        //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     } 
 
@@ -133,8 +148,9 @@ public class Player : MonoBehaviour {
         UdpateCurOrbit(1);
         newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
-        CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+        StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
+        //CubeOrbitR = Mathf.Clamp(newOrbit, minOrbit, SuperManager.Instance.PlanetManager.MaxRadius);
+        //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     }
 

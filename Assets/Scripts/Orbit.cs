@@ -101,11 +101,11 @@ public class Orbit : MonoBehaviour {
 
     public IEnumerator StartMoveOrbits(float targetRadius)
     {
-        if (isContainsPlayer)
-        {
-            SuperManager.Instance.Player.distanceToNext = DistanceToNext;
-            SuperManager.Instance.Player.distanceToPrev = DistanceToPrev;
-        }
+        //if (isContainsPlayer)
+        //{
+        //    SuperManager.Instance.Player.distanceToNext = DistanceToNext;
+        //    SuperManager.Instance.Player.distanceToPrev = DistanceToPrev;
+        //}
         Radius = targetRadius;
         OrbitNum--;
         float startPos = CurRadius;
@@ -115,7 +115,6 @@ public class Orbit : MonoBehaviour {
             float newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
             CurRadius = newRadius;
             t += 0.25f * Time.deltaTime;
-            print(t);
             if (t > 0.4 && t <= 1)
                 t = 1;
             MoveOrbit(CurRadius);
