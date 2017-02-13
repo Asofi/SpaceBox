@@ -5,6 +5,7 @@ using UnityEngine;
 public class Planet : MonoBehaviour {
 
     public float Speed;
+    public int Size;
     private int direction;
 
     private void Start()

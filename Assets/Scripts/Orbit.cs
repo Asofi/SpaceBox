@@ -101,7 +101,6 @@ public class Orbit : MonoBehaviour {
     {
         Radius = targetRadius;
         OrbitNum--;
-        float startPos = CurRadius;
         float t = 0;
         while (t <= 1)
         {
@@ -123,7 +122,6 @@ public class Orbit : MonoBehaviour {
         CurRadius = Radius;
         if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
         {
-            print("Доводка в классе орьиты до " + CurRadius);
             SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
         }
         MoveOrbit(CurRadius);

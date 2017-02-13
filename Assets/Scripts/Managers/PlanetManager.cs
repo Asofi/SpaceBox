@@ -33,39 +33,36 @@ public class PlanetManager : MonoBehaviour {
     void AddOrbits()
     {
         StartOrbit.DistanceToNext = Radiuses[0] - StartOrbit.Radius;
+        Orbit prevOrbit = StartOrbit;
 
         for(int i = 0; i< OrbitsCount; i ++)
         {
-            float radius;
-            radius = Radiuses[i];
 
+            float radius;
             Transform orbit = Instantiate(OrbitPrefab);
             Orbit orbitScript = orbit.GetComponent<Orbit>();
+            orbitScript.Planet = Instantiate(SuperManager.Instance.PlanetManager.GetPlanet(), orbit);
+            if (i == 0)
+                radius = prevOrbit.Radius + orbitScript.Planet.GetComponent<Planet>().Size * 2;
+            else
+                radius = prevOrbit.Radius + prevOrbit.Planet.GetComponent<Planet>().Size + 1.5f * orbitScript.Planet.GetComponent<Planet>().Size; 
+
+
             Orbits.Add(orbitScript);
             orbitScript.Radius = radius;
+            Radiuses[i] = radius;
             orbitScript.OrbitNum = i + 1;
 
-            if(i == 0)
-            {
-                orbitScript.DistanceToPrev = orbitScript.DistanceToPrev = radius - StartOrbit.Radius;
-                orbitScript.DistanceToNext = Radiuses[i + 1] - radius;
-            }
-            else if (i == OrbitsCount -1)
-            {
-                orbitScript.DistanceToPrev = radius - Radiuses[i - 1];
-                orbitScript.DistanceToNext = 0;
-            }
-            else
-            {
-                orbitScript.DistanceToPrev = radius - Radiuses[i - 1];
-                orbitScript.DistanceToNext = Radiuses[i + 1] - radius;
-            }
+            if (prevOrbit == orbitScript)
+            print(radius - prevOrbit.Radius);
+                orbitScript.DistanceToPrev = radius - prevOrbit.Radius;
+                prevOrbit.DistanceToNext = orbitScript.DistanceToPrev;
 
-            orbitScript.Planet = Instantiate(SuperManager.Instance.PlanetManager.GetPlanet(), orbit);
             orbitScript.DrawOrbit();
             MaxRadius = radius;
 
 
+            prevOrbit = orbitScript;
         }
     }
 

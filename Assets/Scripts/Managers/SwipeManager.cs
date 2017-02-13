@@ -20,6 +20,7 @@ public class SwipeManager : MonoBehaviour {
     private static SwipeManager instance;
     public static SwipeManager Instance { get { return instance; } }
 
+    public SwipeDirection Direction { set; get; }
     public SwipeDirection HorDirection { set; get; }
     public SwipeDirection VertDirection { set; get; }
 

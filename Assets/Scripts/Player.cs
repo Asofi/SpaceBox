@@ -17,7 +17,6 @@ public class Player : MonoBehaviour {
     private int direction = 1;
     private int size = 1;
     public float CubeOrbitR;
-    private float distanceBetweenOrbits;
     public float ChangeOrbitSpeed = 3;
 
     private Orbit curOrbitObj;
@@ -26,7 +25,6 @@ public class Player : MonoBehaviour {
     public bool IsOnOrbit;
 
     void Start () {
-        distanceBetweenOrbits = SuperManager.Instance.PlanetManager.DistanceToFirstOrbit;
         minOrbit = SuperManager.Instance.PlanetManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
@@ -113,7 +111,6 @@ public class Player : MonoBehaviour {
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
             yield return null;
         }
-        print("Доводка в классе плеер до " + targetOrbit.CurRadius);
         CubeOrbitR = targetOrbit.CurRadius;
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
         IsOnOrbit = true;
@@ -124,9 +121,7 @@ public class Player : MonoBehaviour {
         if (curOrbitNum == 0)
             return;
 
-        float newOrbit = CubeOrbitR;;
         UdpateCurOrbit(-1);
-        newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
 
@@ -137,9 +132,7 @@ public class Player : MonoBehaviour {
         if (curOrbitNum == SuperManager.Instance.PlanetManager.Orbits.Count-1)
             return;
 
-        float newOrbit = CubeOrbitR;
         UdpateCurOrbit(1);
-        newOrbit = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum].CurRadius;
 
         StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
 
