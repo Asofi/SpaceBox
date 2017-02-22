@@ -15,7 +15,7 @@ public class Player : MonoBehaviour {
     public float Speed;                                         // Текущая скорость 
     public Transform PlayerPivot;                               // Точка, вокруг которой вращается игрок
     private int direction = 1;
-    private int size = 1;
+    public int Size = 1;
     public float CubeOrbitR;
     public float ChangeOrbitSpeed = 3;
 
@@ -25,6 +25,11 @@ public class Player : MonoBehaviour {
     public bool IsOnOrbit;
 
     void Start () {
+
+        EventManager.OnGameStart += OnGameStart;
+        EventManager.OnGameOver += OnGameOver;
+        EventManager.OnLevelUp += OnLevelUp;
+
         minOrbit = SuperManager.Instance.PlanetManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
@@ -140,27 +145,56 @@ public class Player : MonoBehaviour {
 
     void CheckSector()
     {
-        if (PlayerPivot.eulerAngles.y > 90 && PlayerPivot.eulerAngles.y < 270)
-        {
-            curPlayerSector = PlayerSectors.Down;
-        }
-        else if ((PlayerPivot.eulerAngles.y > 270 && PlayerPivot.eulerAngles.y < 360) || (PlayerPivot.eulerAngles.y > 0 && PlayerPivot.eulerAngles.y < 90))
+        if (PlayerPivot.eulerAngles.y > 0 && PlayerPivot.eulerAngles.y < 180)
         {
             curPlayerSector = PlayerSectors.Up;
+        }
+        else if ((PlayerPivot.eulerAngles.y > 180 && PlayerPivot.eulerAngles.y < 360))
+        {
+            curPlayerSector = PlayerSectors.Down;
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        var planet = collision.transform.parent.GetComponent<Orbit>();
+        var planet = collision.transform.GetComponent<Planet>();
 
-        if (planet.PlanetSize.x <= transform.localScale.x)
+        if (planet.Size <= Size)
         {
             collision.transform.parent.GetComponent<Orbit>().isContainsPlanet = false;
-            Destroy(collision.gameObject);
-            transform.localScale = transform.localScale + Vector3.one;
+            collision.gameObject.SetActive(false);
+            transform.localScale = transform.localScale + Vector3.one * 1.5f;
+            Size++;
+            EventManager.AddScore();
         }
         else
-            Destroy(gameObject);
+        {
+            gameObject.SetActive(false);
+            EventManager.GameOver();
+        }
+    }
+
+    void OnLevelUp()
+    {
+        Size = 1;
+        transform.localScale = Vector3.one;
+    }
+
+    void OnGameStart()
+    {
+        gameObject.SetActive(true);
+        CubeOrbitR = minOrbit;
+        curOrbitNum = 0;
+        curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+    }
+
+    void OnGameOver()
+    {
+        //Set origin size
+        Size = 1;
+        transform.localScale = Vector3.one;
+
+        StopAllCoroutines();
     }
 }

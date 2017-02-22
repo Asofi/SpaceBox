@@ -28,6 +28,7 @@ public class Orbit : MonoBehaviour {
         //planet = transform.FindChild("Planet");
         PlanetSpeed = Random.Range(5, 50);
         PlanetDirection = Random.value < 0.5 ? 1 : -1;
+        Radius = SuperManager.Instance.PlanetManager.MinOrbitRadius;
     }
 
     private void Start()
@@ -36,7 +37,6 @@ public class Orbit : MonoBehaviour {
 
         if (CompareTag("StartOrbit"))
         {
-            Radius = SuperManager.Instance.PlanetManager.MinOrbitRadius;
             DrawOrbit();
         }
 
@@ -99,17 +99,22 @@ public class Orbit : MonoBehaviour {
 
     public IEnumerator StartMoveOrbits(float targetRadius)
     {
+        float radiusBuff = Radius;
         Radius = targetRadius;
+        //float targetCamSize = Camera.main.orthographicSize - radiusBuff - Radius;
         OrbitNum--;
         float t = 0;
         while (t <= 1)
         {
             float newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
             CurRadius = newRadius;
+            //Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetCamSize, t);
             t += 0.25f * Time.deltaTime;
             if (t > 0.4 && t <= 1)
                 t = 1;
             MoveOrbit(CurRadius);
+
+
             if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
             {
                 SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);

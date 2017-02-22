@@ -3,32 +3,46 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlanetManager : MonoBehaviour {
-
     public Transform OrbitPrefab;
-    public Orbit StartOrbit;
+    public Transform PlanetPool;
     public Transform Sun;
-    public float MinOrbitRadius;
+    public Orbit StartOrbitPrefab;
+    public Orbit StartOrbit;
+    public List<Planet> Planets;
+    public List<Orbit> Orbits;
     public int OrbitsCount;
+    public int CurPlanetCount;
+    public float MinOrbitRadius;
     public float MaxRadius;
     public float DistanceToFirstOrbit;
-    public List<GameObject> Planets;
-    public List<Orbit> Orbits;
     public float[] Radiuses;
 
+    private float startCamSize = 70;
+    private float curCamSize;
+    
+
     public bool isRemoving = false;
+    public bool isFirstStart = true;
 
 
 	// Use this for initialization
 	void Awake () {
-        MinOrbitRadius = Sun.localScale.x/2 + DistanceToFirstOrbit;
-        Orbits.Add(StartOrbit);
+        MinOrbitRadius = 10 + DistanceToFirstOrbit;
 	}
 
     void Start()
     {
-        AddOrbits();
+        EventManager.OnGameStart += OnGameStart;
+        EventManager.OnGameOver += OnGameOver;
+        EventManager.OnAddScore += OnAddScore;
+        EventManager.OnLevelUp += OnLevelUp;
+        StartOrbit = Instantiate(StartOrbitPrefab);
+        Orbits.Add(StartOrbit);
+        startCamSize = 45 - ((Planets.Count - OrbitsCount) * 8);
+        curCamSize = startCamSize;
     }
-	
+
+    #region OrbitsControll
 
     void AddOrbits()
     {
@@ -41,9 +55,17 @@ public class PlanetManager : MonoBehaviour {
             float radius;
             Transform orbit = Instantiate(OrbitPrefab);
             Orbit orbitScript = orbit.GetComponent<Orbit>();
-            orbitScript.Planet = Instantiate(SuperManager.Instance.PlanetManager.GetPlanet(), orbit);
+
+            orbitScript.Planet = GetPlanet();
+            var planet = orbitScript.Planet;
+            planet.transform.SetParent(orbit);
+            planet.SetActive(true);
+
             if (i == 0)
+            {
                 radius = prevOrbit.Radius + orbitScript.Planet.GetComponent<Planet>().Size * 2;
+
+            }
             else
                 radius = prevOrbit.Radius + prevOrbit.Planet.GetComponent<Planet>().Size + 1.5f * orbitScript.Planet.GetComponent<Planet>().Size; 
 
@@ -78,29 +100,138 @@ public class PlanetManager : MonoBehaviour {
 
         isRemoving = true;
         var orbit = Orbits[orbitNum];
+        if(orbit.Planet != null)
+        {
+            orbit.Planet.transform.SetParent(PlanetPool);
+            orbit.Planet.SetActive(false);
+            Planets.Add(orbit.Planet.GetComponent<Planet>());
+        }
         var removedOrbitsDistToNext = orbit.DistanceToNext;
+        var removedOrbitsDistToPrev = orbit.DistanceToPrev;
         Orbits.RemoveAt(orbitNum);
         orbit.StopAllCoroutines();
         Destroy(orbit.gameObject);
         if (SuperManager.Instance.Player.curOrbitNum >= orbitNum)
             SuperManager.Instance.Player.curOrbitNum--;
 
+        if(zoomCamera != null)
+            StopCoroutine(zoomCamera);
+
+        zoomCamera = ZoomCamera(2f);
+        StartCoroutine(zoomCamera);
 
         for (int i = orbitNum; i < Orbits.Count; i++)
         {
+            if(orbitNum == 0 || removedOrbitsDistToPrev > Orbits[orbitNum].Planet.GetComponent<Planet>().Size)
+            {
                 StartCoroutine(Orbits[i].StartMoveOrbits(Orbits[i].Radius - removedOrbitsDistToNext));
+            }
+            else
+            {
+                StartCoroutine(Orbits[i].StartMoveOrbits(Orbits[i].Radius - removedOrbitsDistToNext + Orbits[orbitNum].Planet.GetComponent<Planet>().Size));
+
+            }
         }
     }
+
+
 
     public GameObject GetPlanet()
     {
         if (Planets.Count > 0)
         {
-            var num = Random.Range(0, Planets.Count);
+            var border = Planets.Count - (5 - OrbitsCount);
+            var num = Random.Range(0, border);
             var buff = Planets[num];
             Planets.RemoveAt(num);
-            return buff;
+            return buff.gameObject;
         }
         return null;
+    }
+
+    #endregion
+
+    #region CameraFuncs
+    IEnumerator zoomCamera;
+    IEnumerator ZoomCamera(float time)
+    {
+        Camera cam = Camera.main;
+        float startSize = cam.orthographicSize;
+        curCamSize -= 4;
+        float targetSize = curCamSize;
+
+        float t = 0;
+        do
+        {
+            float newSize = Mathf.Lerp(startSize, targetSize, t);
+            cam.orthographicSize = newSize;
+            t += 1 / time * Time.deltaTime;
+            if (t > 1)
+                t = 1;
+            //Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetCamSize, t);
+            yield return null;
+        } while (t < 1);
+
+        cam.orthographicSize = targetSize;
+    }
+    #endregion
+    void OnAddScore()
+    {
+        if (CurPlanetCount > 0)
+            CurPlanetCount--;
+        if(CurPlanetCount == 0)
+            EventManager.LevelUp();
+    }
+
+    void OnLevelUp()
+    {
+        StopAllCoroutines();
+
+        StartOrbit = Orbits[0];
+        StartOrbit.Planet.transform.SetParent(PlanetPool);
+        StartOrbit.Planet.SetActive(false);
+        Planets.Add(StartOrbit.Planet.GetComponent<Planet>());
+        StartOrbit.Planet = null;
+
+        Planets.Sort();
+        print("Level Up");
+        if (StartOrbit == null)
+        {
+            StartOrbit = Instantiate(StartOrbitPrefab);
+            Orbits.Add(StartOrbit);
+        }
+        Camera.main.orthographicSize = startCamSize;
+        curCamSize = startCamSize;
+        CurPlanetCount = OrbitsCount;
+        AddOrbits();
+    }
+
+    void OnGameStart()
+    {
+        if(StartOrbit == null)
+        {
+            StartOrbit = Instantiate(StartOrbitPrefab);
+            Orbits.Add(StartOrbit);
+        }
+        Camera.main.orthographicSize = startCamSize;
+        curCamSize = startCamSize;
+        CurPlanetCount = OrbitsCount;
+        AddOrbits();
+
+    }
+
+    void OnGameOver()
+    {
+        if (isFirstStart)
+            isFirstStart = false;
+
+        int count = Orbits.Count;
+        for (int i = 0; i< count; i++)
+        {
+            RemoveOrbit(0);
+        }
+
+        Planets.Sort();
+        StopAllCoroutines();
     }
 }

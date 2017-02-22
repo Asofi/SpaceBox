@@ -13,5 +13,8 @@ public class SuperManager : MonoBehaviour {
     }
 
     public PlanetManager PlanetManager;
+    public GUIManager GUIManager;
+    public ScoreManager ScoreManager;
+
     public Player Player;
 }

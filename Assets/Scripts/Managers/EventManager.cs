@@ -5,7 +5,7 @@
 
     public static event GameEvent OnGameStart, OnGameOver,
                                     OnAddScore, OnMute,
-                                    OnAddStar, OnLevelUp,
+                                    OnAddCrystall, OnLevelUp,
                                     OnMoveOrbit, OnKillAll;
 
     public static void GameOver()
@@ -24,9 +24,9 @@
         if (OnAddScore != null) OnAddScore();
     }
 
-    public static void AddStar()
+    public static void AddCrystall()
     {
-        if (OnAddStar != null) OnAddStar();
+        if (OnAddCrystall != null) OnAddCrystall();
     }
 
     public static void Mute()
