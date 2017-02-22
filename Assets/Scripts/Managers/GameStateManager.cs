@@ -14,4 +14,6 @@ public static class GameStateManager {
 
     public static GameStates GameState = GameStates.OnStartScreen;
 
+    public static bool IsMobile = false;
+
 }

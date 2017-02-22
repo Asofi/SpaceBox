@@ -22,7 +22,6 @@ public class PlanetManager : MonoBehaviour {
     
 
     public bool isRemoving = false;
-    public bool isFirstStart = true;
 
 
 	// Use this for initialization
@@ -168,13 +167,14 @@ public class PlanetManager : MonoBehaviour {
             t += 1 / time * Time.deltaTime;
             if (t > 1)
                 t = 1;
-            //Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetCamSize, t);
             yield return null;
         } while (t < 1);
 
         cam.orthographicSize = targetSize;
     }
     #endregion
+
+    #region EventFuncs
     void OnAddScore()
     {
         if (CurPlanetCount > 0)
@@ -222,9 +222,6 @@ public class PlanetManager : MonoBehaviour {
 
     void OnGameOver()
     {
-        if (isFirstStart)
-            isFirstStart = false;
-
         int count = Orbits.Count;
         for (int i = 0; i< count; i++)
         {
@@ -234,4 +231,5 @@ public class PlanetManager : MonoBehaviour {
         Planets.Sort();
         StopAllCoroutines();
     }
+    #endregion
 }

@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    enum PlayerSectors
-    {
-        Up,
-        Down,
-    }
-
-    PlayerSectors curPlayerSector;
-
     public float Speed;                                         // Текущая скорость 
     public Transform PlayerPivot;                               // Точка, вокруг которой вращается игрок
     private int direction = 1;
@@ -23,6 +15,7 @@ public class Player : MonoBehaviour {
     private float minOrbit;
     public int curOrbitNum;
     public bool IsOnOrbit;
+    private bool isGoingRight = false;
 
     void Start () {
 
@@ -43,56 +36,16 @@ public class Player : MonoBehaviour {
         Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
         PlayerPivot.Rotate(newPos);
         transform.localPosition = new Vector3(0, 0, CubeOrbitR);
-        CheckSector();
 
-        switch (curPlayerSector)
-        {
-            case PlayerSectors.Down:
-                if (SwipeManager.Instance.VertDirection == SwipeDirection.Up /*|| SwipeManager.Instance.Direction == SwipeDirection.LeftUp || SwipeManager.Instance.Direction == SwipeDirection.RightUp*/)
-                {
-                    MoveBack();
-                }
+    }
 
-                if (SwipeManager.Instance.VertDirection == SwipeDirection.Down /*|| SwipeManager.Instance.Direction == SwipeDirection.LeftDown || SwipeManager.Instance.Direction == SwipeDirection.RightDown*/)
-                {
-                    MoveForvard();
-                }
-
-                if (SwipeManager.Instance.HorDirection == SwipeDirection.Left)
-                {
-                    direction = 1;
-                }
-
-                if (SwipeManager.Instance.HorDirection == SwipeDirection.Right)
-                {
-                    direction = -1;
-                }
-                break;
-
-            case PlayerSectors.Up:
-
-                if (SwipeManager.Instance.VertDirection == SwipeDirection.Up /*|| SwipeManager.Instance.Direction == SwipeDirection.LeftUp || SwipeManager.Instance.Direction == SwipeDirection.RightUp*/)
-                {
-                    MoveForvard();
-                }
-
-                if (SwipeManager.Instance.VertDirection == SwipeDirection.Down /*|| SwipeManager.Instance.Direction == SwipeDirection.LeftDown || SwipeManager.Instance.Direction == SwipeDirection.RightDown*/)
-                {
-                    MoveBack();
-                }
-
-                if (SwipeManager.Instance.HorDirection == SwipeDirection.Left)
-                {
-                    direction = -1;
-                }
-
-                if (SwipeManager.Instance.HorDirection == SwipeDirection.Right)
-                {
-                    direction = 1;
-                }
-                break;
-        }
-
+    public void ChangeDirection(bool right)
+    {
+        if (isGoingRight == right)
+            return;
+        direction = -direction;
+        transform.Rotate(Vector3.forward * 180);
+        isGoingRight = !isGoingRight;
     }
 
     void UdpateCurOrbit(int dir)
@@ -103,6 +56,7 @@ public class Player : MonoBehaviour {
         curOrbitObj.isContainsPlayer = true;
     }
 
+    IEnumerator move;
     IEnumerator Move(Orbit targetOrbit)
     {
         IsOnOrbit = false;
@@ -121,38 +75,27 @@ public class Player : MonoBehaviour {
         IsOnOrbit = true;
     }
 
-    void MoveBack()
+    public void StartMoving(int dir)
     {
-        if (curOrbitNum == 0)
-            return;
-
-        UdpateCurOrbit(-1);
-
-        StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
-
-    } 
-
-    void MoveForvard()
-    {
-        if (curOrbitNum == SuperManager.Instance.PlanetManager.Orbits.Count-1)
-            return;
-
-        UdpateCurOrbit(1);
-
-        StartCoroutine(Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]));
-
-    }
-
-    void CheckSector()
-    {
-        if (PlayerPivot.eulerAngles.y > 0 && PlayerPivot.eulerAngles.y < 180)
+        if(dir == 1)
         {
-            curPlayerSector = PlayerSectors.Up;
+            if (curOrbitNum == SuperManager.Instance.PlanetManager.Orbits.Count-1)
+                return;
         }
-        else if ((PlayerPivot.eulerAngles.y > 180 && PlayerPivot.eulerAngles.y < 360))
+        else
         {
-            curPlayerSector = PlayerSectors.Down;
+            if (curOrbitNum == 0)
+                return;
         }
+
+        UdpateCurOrbit(dir);
+        if(move != null)
+        {
+            StopCoroutine(move);
+        }
+            move = Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]);
+        StartCoroutine(move);
+
     }
 
     private void OnCollisionEnter(Collision collision)
