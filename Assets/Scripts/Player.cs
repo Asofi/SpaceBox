@@ -80,8 +80,6 @@ public class Player : MonoBehaviour {
         if (GameStateManager.GameState != GameStateManager.GameStates.InGame)
             return;
 
-        print("moving");
-
         if(dir == 1)
         {
             if (curOrbitNum == SuperManager.Instance.GameManager.Orbits.Count-1)

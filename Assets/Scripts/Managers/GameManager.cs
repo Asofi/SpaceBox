@@ -138,10 +138,13 @@ public class GameManager : MonoBehaviour {
 
         for (int i = orbitNum; i < Orbits.Count; i++)
         {
-            if(orbitNum == 0 || removedOrbitsDistToPrev > Orbits[orbitNum].Planet.GetComponent<Planet>().Size * 2)
+            if(orbitNum == 0)
             {
+                if(i == 0)
+                    Orbits[i].StartMovingCoroutine(MinOrbitRadius);
+                else
+                    Orbits[i].StartMovingCoroutine(Orbits[i].Radius - removedOrbitsDistToNext);
                 //print("removed normally");
-                Orbits[i].StartMovingCoroutine(Orbits[i].Radius - removedOrbitsDistToNext);
                 //StartCoroutine(Orbits[i].StartMoveOrbits(Orbits[i].Radius - removedOrbitsDistToNext));
             }
             else
