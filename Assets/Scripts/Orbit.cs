@@ -6,9 +6,9 @@ public class Orbit : MonoBehaviour {
     [Header("Draw Settings")]
     public float ThetaScale = 0.03f;        //Set lower to add more points
     public Material LineMaterial;
-    int size; //Total number of points in circle
-    LineRenderer lineRenderer;
+    public int Segments; //Total number of points in circle
     public float Radius;
+    LineRenderer lineRenderer;
     public float CurRadius;
 
     [Space]
@@ -28,12 +28,13 @@ public class Orbit : MonoBehaviour {
         //planet = transform.FindChild("Planet");
         PlanetSpeed = Random.Range(5, 50);
         PlanetDirection = Random.value < 0.5 ? 1 : -1;
-        Radius = SuperManager.Instance.PlanetManager.MinOrbitRadius;
+        Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
     }
 
     private void Start()
     {
-        
+        //EventManager.OnGameOver += StopMovingOrbit;
+        //EventManager.OnLevelUp += StopMovingOrbit;
 
         if (CompareTag("StartOrbit"))
         {
@@ -61,35 +62,52 @@ public class Orbit : MonoBehaviour {
     private void FixedUpdate()
     {
         if (!isContainsPlanet && !isContainsPlayer)
-            SuperManager.Instance.PlanetManager.RemoveOrbit(OrbitNum);
+            SuperManager.Instance.GameManager.RemoveOrbit(OrbitNum);
     }
 
     public void DrawOrbit()
     {
-        float sizeValue = (2.0f * Mathf.PI) / ThetaScale;
-        size = (int)sizeValue;
-        size++;
+
+        //float sizeValue = (int)((1f / ThetaScale) + 2f);
+        //size = (int)sizeValue;
+        //size++;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = LineMaterial;
         lineRenderer.startWidth = 0.02f;
         lineRenderer.endWidth = 0.02f;
-        lineRenderer.widthMultiplier = 3;
-        lineRenderer.numPositions = size;
+        lineRenderer.widthMultiplier = 13;
+        lineRenderer.numPositions = Segments + 1;
 
-        Vector3 pos;
-        float theta = 0f;
-        for (int i = 0; i < size; i++)
+        float x;
+        float y = 0f;
+        float z;
+
+        float angle = 20f;
+
+        for (int i = 0; i < (Segments + 1); i++)
         {
-            theta += (2.0f * Mathf.PI * ThetaScale);
-            float x = Radius * Mathf.Cos(theta);
-            float z = Radius * Mathf.Sin(theta);
-            x += gameObject.transform.position.x;
-            z += gameObject.transform.position.z;
-            pos = new Vector3(x, 0, z);
-            lineRenderer.SetPosition(i, pos);
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * Radius;
+            z = Mathf.Cos(Mathf.Deg2Rad * angle) * Radius;
+
+            lineRenderer.SetPosition(i, new Vector3(x, y, z));
+
+            angle += (360f / Segments);
         }
 
-        if(Planet != null)
+        //Vector3 pos;
+        //float theta = 0f;
+        //for (int i = 0; i < size; i++)
+        //{
+        //    theta += (2.0f * Mathf.PI * ThetaScale);
+        //    float x = Radius * Mathf.Cos(theta);
+        //    float z = Radius * Mathf.Sin(theta);
+        //    x += gameObject.transform.position.x;
+        //    z += gameObject.transform.position.z;
+        //    pos = new Vector3(x, 0, z);
+        //    lineRenderer.SetPosition(i, pos);
+        //}
+
+        if (Planet != null)
         {
             Planet.transform.localPosition = new Vector3(Radius, 0, 0);
         }
@@ -97,9 +115,13 @@ public class Orbit : MonoBehaviour {
         CurRadius = Radius;
     }
 
-    public IEnumerator StartMoveOrbits(float targetRadius)
+    public void StartMovingCoroutine(float targetRad)
     {
-        float radiusBuff = Radius;
+        StartCoroutine(StartMoveOrbits(targetRad));
+    }
+
+    private IEnumerator StartMoveOrbits(float targetRadius)
+    {
         Radius = targetRadius;
         //float targetCamSize = Camera.main.orthographicSize - radiusBuff - Radius;
         OrbitNum--;
@@ -123,7 +145,7 @@ public class Orbit : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
 
-        SuperManager.Instance.PlanetManager.isRemoving = false;
+        SuperManager.Instance.GameManager.isRemoving = false;
         CurRadius = Radius;
         if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
         {
@@ -135,21 +157,28 @@ public class Orbit : MonoBehaviour {
 
     void MoveOrbit(float radius)
     {
-        Vector3 pos;
-        float theta = 0f;
-        for (int i = 0; i < size; i++)
+        float x;
+        float y = 0f;
+        float z;
+
+        float angle = 20f;
+
+        for (int i = 0; i < (Segments + 1); i++)
         {
-            theta += (2.0f * Mathf.PI * ThetaScale);
-            float x = radius * Mathf.Cos(theta);
-            float z = radius * Mathf.Sin(theta);
-            x += gameObject.transform.position.x;
-            z += gameObject.transform.position.z;
-            pos = new Vector3(x, 0, z);
-            lineRenderer.SetPosition(i, pos);
+            x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+            z = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 
-            if(Planet != null)
-                Planet.transform.localPosition = new Vector3(radius, 0, 0);
+            lineRenderer.SetPosition(i, new Vector3(x, y, z));
 
+            angle += (360f / Segments);
         }
+
+        if (Planet != null)
+                Planet.transform.localPosition = new Vector3(radius, 0, 0);
+    }
+
+    void StopMovingOrbit()
+    {
+        StopAllCoroutines();
     }
 }

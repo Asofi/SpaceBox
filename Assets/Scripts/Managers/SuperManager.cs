@@ -12,7 +12,7 @@ public class SuperManager : MonoBehaviour {
         instance = this;
     }
 
-    public PlanetManager PlanetManager;
+    public GameManager GameManager;
     public GUIManager GUIManager;
     public ScoreManager ScoreManager;
 

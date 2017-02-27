@@ -55,72 +55,74 @@ public class SwipeManager : MonoBehaviour {
 
         HorDirection = SwipeDirection.None;
         VertDirection = SwipeDirection.None;
-        if((GameStateManager.IsMobile ? !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId) : !EventSystem.current.IsPointerOverGameObject()))
-        if (Input.GetMouseButtonDown(0))
+        if ((GameStateManager.IsMobile ? !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId) : !EventSystem.current.IsPointerOverGameObject()))
         {
-            touchPosition = Input.mousePosition;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            Vector2 deltaSwipe = touchPosition - Input.mousePosition;
-
-            if (Mathf.Abs(deltaSwipe.x) > SwipeResistanceX)
+            if (Input.GetMouseButtonDown(0))
             {
-                HorDirection |= (deltaSwipe.x > 0) ? SwipeDirection.Left : SwipeDirection.Right;
-                CheckSector();
-                switch (curPlayerSector)
-                {
-                    case PlayerSectors.Down:
-
-                        if (HorDirection == SwipeDirection.Left)
-                        {
-                            SuperManager.Instance.Player.ChangeDirection(false);
-                        }
-
-                        if (HorDirection == SwipeDirection.Right)
-                        {
-                            SuperManager.Instance.Player.ChangeDirection(true);
-                        }
-                        break;
-
-                    case PlayerSectors.Up:
-
-                        if (HorDirection == SwipeDirection.Left)
-                        {
-                            SuperManager.Instance.Player.ChangeDirection(true);
-                        }
-
-                        if (HorDirection == SwipeDirection.Right)
-                        {
-                            SuperManager.Instance.Player.ChangeDirection(false);
-                        }
-                        break;
-                }
-            }
-            else
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(touchPosition);
-
-                if (Physics.Raycast(ray, out hit, TouchMask))
-                {
-                    var PlayerPos = SuperManager.Instance.Player.CubeOrbitR;
-
-                    if (Mathf.Pow(hit.point.x, 2) + Mathf.Pow(hit.point.z, 2) <= (PlayerPos * PlayerPos))
-                        SuperManager.Instance.Player.StartMoving(-1);
-                    else
-                        SuperManager.Instance.Player.StartMoving(1);
-                }
+                touchPosition = Input.mousePosition;
             }
 
-           
+            if (Input.GetMouseButtonUp(0))
+            {
+                Vector2 deltaSwipe = touchPosition - Input.mousePosition;
+
+                if (Mathf.Abs(deltaSwipe.x) > SwipeResistanceX)
+                {
+                    HorDirection |= (deltaSwipe.x > 0) ? SwipeDirection.Left : SwipeDirection.Right;
+                    CheckSector();
+                    switch (curPlayerSector)
+                    {
+                        case PlayerSectors.Down:
+
+                            if (HorDirection == SwipeDirection.Left)
+                            {
+                                SuperManager.Instance.Player.ChangeDirection(false);
+                            }
+
+                            if (HorDirection == SwipeDirection.Right)
+                            {
+                                SuperManager.Instance.Player.ChangeDirection(true);
+                            }
+                            break;
+
+                        case PlayerSectors.Up:
+
+                            if (HorDirection == SwipeDirection.Left)
+                            {
+                                SuperManager.Instance.Player.ChangeDirection(true);
+                            }
+
+                            if (HorDirection == SwipeDirection.Right)
+                            {
+                                SuperManager.Instance.Player.ChangeDirection(false);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ScreenPointToRay(touchPosition);
+
+                    if (Physics.Raycast(ray, out hit, TouchMask))
+                    {
+                        var PlayerPos = SuperManager.Instance.Player.CubeOrbitR;
+
+                        if (Mathf.Pow(hit.point.x, 2) + Mathf.Pow(hit.point.z, 2) <= (PlayerPos * PlayerPos))
+                            SuperManager.Instance.Player.StartMoving(-1);
+                        else
+                            SuperManager.Instance.Player.StartMoving(1);
+                    }
+                }
 
 
-            //if (Mathf.Abs(deltaSwipe.y) > SwipeResistanceY)
-            //{
-            //    VertDirection |= (deltaSwipe.y > 0) ? SwipeDirection.Down : SwipeDirection.Up;
-            //}
+
+
+                //if (Mathf.Abs(deltaSwipe.y) > SwipeResistanceY)
+                //{
+                //    VertDirection |= (deltaSwipe.y > 0) ? SwipeDirection.Down : SwipeDirection.Up;
+                //}
+            }
         }
 
     }

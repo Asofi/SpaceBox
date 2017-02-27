@@ -23,10 +23,10 @@ public class Player : MonoBehaviour {
         EventManager.OnGameOver += OnGameOver;
         EventManager.OnLevelUp += OnLevelUp;
 
-        minOrbit = SuperManager.Instance.PlanetManager.MinOrbitRadius;
+        minOrbit = SuperManager.Instance.GameManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
-        curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     }
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour {
     {
         curOrbitObj.isContainsPlayer = false;
         curOrbitNum += dir;
-        curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
         curOrbitObj.isContainsPlayer = true;
     }
 
@@ -77,9 +77,14 @@ public class Player : MonoBehaviour {
 
     public void StartMoving(int dir)
     {
+        if (GameStateManager.GameState != GameStateManager.GameStates.InGame)
+            return;
+
+        print("moving");
+
         if(dir == 1)
         {
-            if (curOrbitNum == SuperManager.Instance.PlanetManager.Orbits.Count-1)
+            if (curOrbitNum == SuperManager.Instance.GameManager.Orbits.Count-1)
                 return;
         }
         else
@@ -93,7 +98,7 @@ public class Player : MonoBehaviour {
         {
             StopCoroutine(move);
         }
-            move = Move(SuperManager.Instance.PlanetManager.Orbits[curOrbitNum]);
+            move = Move(SuperManager.Instance.GameManager.Orbits[curOrbitNum]);
         StartCoroutine(move);
 
     }
@@ -119,6 +124,7 @@ public class Player : MonoBehaviour {
 
     void OnLevelUp()
     {
+        StopAllCoroutines();
         Size = 1;
         transform.localScale = Vector3.one;
     }
@@ -128,16 +134,16 @@ public class Player : MonoBehaviour {
         gameObject.SetActive(true);
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
-        curOrbitObj = SuperManager.Instance.PlanetManager.Orbits[curOrbitNum];
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
     }
 
     void OnGameOver()
     {
+        StopAllCoroutines();
         //Set origin size
         Size = 1;
         transform.localScale = Vector3.one;
 
-        StopAllCoroutines();
     }
 }
