@@ -53,6 +53,9 @@ public class SwipeManager : MonoBehaviour {
 	
 	void Update () {
 
+        if (SuperManager.Instance.GameManager.isLevelUping)
+            return;
+
         HorDirection = SwipeDirection.None;
         VertDirection = SwipeDirection.None;
         if ((GameStateManager.IsMobile ? !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId) : !EventSystem.current.IsPointerOverGameObject()))

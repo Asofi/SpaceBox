@@ -26,6 +26,7 @@ public class Asteroid : MonoBehaviour {
     void OnSpawned()
     {
         mRenderer.enabled = true;
+        GetComponent<Collider>().enabled = true;
         int num = Random.Range(0, Meshes.Length);
         mMeshFilter.mesh = Meshes[num];
         transform.LookAt(SuperManager.Instance.GameManager.Sun);
@@ -39,6 +40,8 @@ public class Asteroid : MonoBehaviour {
     {
         Expl.Play();
         mRenderer.enabled = false;
+        GetComponent<Collider>().enabled = false;
+        mRigid.velocity = Vector3.zero;
         StartCoroutine(DelayedDespawn(4));
     }
 

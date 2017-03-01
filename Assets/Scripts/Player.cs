@@ -12,6 +12,8 @@ public class Player : MonoBehaviour {
     public float ChangeOrbitSpeed = 3;
 
     private Orbit curOrbitObj;
+    private Vector3 originSize;
+    private Vector3 curSize;
     private float minOrbit;
     public int curOrbitNum;
     public bool IsOnOrbit;
@@ -23,6 +25,9 @@ public class Player : MonoBehaviour {
         EventManager.OnGameOver += OnGameOver;
         EventManager.OnLevelUp += OnLevelUp;
 
+        originSize = transform.localScale;
+        curSize = originSize;
+
         minOrbit = SuperManager.Instance.GameManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 0;
@@ -33,7 +38,7 @@ public class Player : MonoBehaviour {
 	
 	void Update () {
 
-        Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
+        Vector3 newPos = new Vector3(0, (Speed - curOrbitNum * 10) * direction * Time.deltaTime, 0);
         PlayerPivot.Rotate(newPos);
         transform.localPosition = new Vector3(0, 0, CubeOrbitR);
 
@@ -75,6 +80,24 @@ public class Player : MonoBehaviour {
         IsOnOrbit = true;
     }
 
+    IEnumerator resize;
+    IEnumerator Resize(float targetSize, float time)
+    {
+        Vector3 target = originSize * targetSize;
+
+        float t = 0;
+        while(t < 1)
+        {
+            Vector3 newSize = Vector3.Lerp(curSize, target, t);
+            transform.localScale = newSize;
+            t += 1 / time * Time.deltaTime;
+            print(curSize);
+            yield return new WaitForEndOfFrame();
+        }
+        transform.localScale = target;
+        curSize = originSize * Size;
+    }
+
     public void StartMoving(int dir)
     {
         if (GameStateManager.GameState != GameStateManager.GameStates.InGame)
@@ -109,8 +132,12 @@ public class Player : MonoBehaviour {
         {
             collision.transform.parent.GetComponent<Orbit>().isContainsPlanet = false;
             collision.gameObject.SetActive(false);
-            transform.localScale = transform.localScale + Vector3.one * 1.5f;
             Size++;
+            if (resize != null)
+                StopCoroutine(resize);
+            resize = Resize(Size, 0.5f);
+            StartCoroutine(resize);
+            //transform.localScale = originSize * Size;
             EventManager.AddScore();
         }
         else
@@ -124,7 +151,15 @@ public class Player : MonoBehaviour {
     {
         StopAllCoroutines();
         Size = 1;
-        transform.localScale = Vector3.one;
+        if (resize != null)
+            StopCoroutine(resize);
+        resize = Resize(Size, 2f);
+        StartCoroutine(resize);
+
+        CubeOrbitR = minOrbit;
+        curOrbitNum = 0;
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
     }
 
     void OnGameStart()
@@ -141,7 +176,7 @@ public class Player : MonoBehaviour {
         StopAllCoroutines();
         //Set origin size
         Size = 1;
-        transform.localScale = Vector3.one;
+        transform.localScale = originSize;
 
     }
 }

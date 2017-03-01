@@ -115,23 +115,28 @@ public class Orbit : MonoBehaviour {
         CurRadius = Radius;
     }
 
-    public void StartMovingCoroutine(float targetRad)
+    public void StartMovingCoroutine(float targetRad, bool changeOrbitNum, float time)
     {
-        StartCoroutine(StartMoveOrbits(targetRad));
+        if (startMovingOrbit != null)
+            StopCoroutine(startMovingOrbit);
+        startMovingOrbit = StartMoveOrbits(targetRad, changeOrbitNum, time);
+        StartCoroutine(startMovingOrbit);
     }
 
-    private IEnumerator StartMoveOrbits(float targetRadius)
+    private IEnumerator startMovingOrbit;
+    private IEnumerator StartMoveOrbits(float targetRadius, bool changeOrbitNum, float time)
     {
         Radius = targetRadius;
-        //float targetCamSize = Camera.main.orthographicSize - radiusBuff - Radius;
-        OrbitNum--;
+        if(changeOrbitNum)
+            OrbitNum--;
         float t = 0;
-        while (t <= 1)
+        while (t < 1)
         {
             float newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
             CurRadius = newRadius;
-            //Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetCamSize, t);
-            t += 0.25f * Time.deltaTime;
+            t += 1/time * Time.deltaTime;
+            if(t > 0.05)
+                SuperManager.Instance.GameManager.isLevelUping = false;
             if (t > 0.4 && t <= 1)
                 t = 1;
             MoveOrbit(CurRadius);
@@ -145,13 +150,12 @@ public class Orbit : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
 
-        SuperManager.Instance.GameManager.isRemoving = false;
         CurRadius = Radius;
         if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
         {
             SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
         }
-        MoveOrbit(CurRadius);
+        //MoveOrbit(CurRadius);
     }
 
 
