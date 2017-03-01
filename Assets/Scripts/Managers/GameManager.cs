@@ -21,8 +21,13 @@ public class GameManager : MonoBehaviour {
     public float DistanceToFirstOrbit;
     public float[] Radiuses;
 
+    public float CameraShakeTime = 1;
+    public float ShakeAmount = 5;
+    private Vector3 originCamPos;
+
     private float startCamSize = 70;
     private float curCamSize;
+
     
 
     public bool isLevelUping = false;
@@ -43,6 +48,7 @@ public class GameManager : MonoBehaviour {
         Orbits.Add(StartOrbit);
         startCamSize = 55 - ((Planets.Count - OrbitsCount) * 8);
         curCamSize = startCamSize;
+        originCamPos = Camera.main.transform.localPosition;
     }
 
     IEnumerator SpawnAsteroids()
@@ -194,6 +200,22 @@ public class GameManager : MonoBehaviour {
         cam.orthographicSize = targetSize;
         print("End Zooming");
     }
+
+    private IEnumerator cameraShake;
+    private IEnumerator CameraShake()
+    {
+        float shakeTime = CameraShakeTime;
+        var mCam = Camera.main;
+        while (shakeTime >= 0)
+        {
+            mCam.transform.localPosition = new Vector3(mCam.transform.localPosition.x,
+                                                        Random.Range(originCamPos.y - ShakeAmount, originCamPos.y + ShakeAmount),
+                                                        Random.Range(originCamPos.z - ShakeAmount, originCamPos.z + ShakeAmount));
+            shakeTime -= Time.deltaTime;
+            yield return null;
+        }
+        mCam.transform.localPosition = originCamPos;
+    }
     #endregion
 
     #region EventFuncs
@@ -209,7 +231,13 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator ChangeLevel()
     {
-        yield return new WaitForSeconds(2f);
+
+        yield return new WaitForSeconds(1f);
+        if (cameraShake != null)
+            StopCoroutine(cameraShake);
+        cameraShake = CameraShake();
+        StartCoroutine(cameraShake);
+        yield return new WaitForSeconds(1f);
         EventManager.LevelUp();
     }
 
