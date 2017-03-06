@@ -94,11 +94,11 @@ public class GameManager : MonoBehaviour {
 
             if (i == 0)
             {
-                radius = prevOrbit.Radius + orbitScript.Planet.GetComponent<Planet>().Size * 2;
+                radius = prevOrbit.Radius + orbitScript.Planet.GetComponent<Planet>().Size /2;
 
             }
             else
-                radius = /*prevOrbit.Radius*/ Radiuses[i-1] + prevOrbit.Planet.GetComponent<Planet>().Size + 1.5f * orbitScript.Planet.GetComponent<Planet>().Size * 2f;
+                radius = /*prevOrbit.Radius*/ Radiuses[i-1] + prevOrbit.Planet.GetComponent<Planet>().Size + 1.5f * orbitScript.Planet.GetComponent<Planet>().Size /2;
 
 
             Orbits.Add(orbitScript);

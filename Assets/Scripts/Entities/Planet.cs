@@ -36,7 +36,7 @@ public class Planet : MonoBehaviour, IComparable<Planet>
     // Update is called once per frame
     void Update () {
         Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
-        transform.Rotate(newPos);
+        transform.Rotate(newPos, Space.World);
     }
 
     public int CompareTo(Planet other)
