@@ -17,11 +17,18 @@ public class Orbit : MonoBehaviour {
     public float PlanetSpeed = 5f;
     public int PlanetDirection = 1;
     public GameObject Planet;
+    public Transform CrystallPivot;
+    public Transform Crystall;
     public bool isContainsPlanet = true;
     public bool isContainsPlayer = false;
+    public bool isContainsCrystall = false;
     public int OrbitNum;
     public float DistanceToNext;
     public float DistanceToPrev;
+
+    private float orbitAngle;
+
+    public float CrystallSpawnChance = 0.3f;
 
     void Awake()
     {
@@ -47,12 +54,13 @@ public class Orbit : MonoBehaviour {
             return;
         }
 
-        transform.Rotate(Vector3.up, Random.Range(0, 360));
+        orbitAngle = Random.Range(0, 360);
+        transform.Rotate(Vector3.up, orbitAngle);
     }
 
     private void Update()
     {
-        if (isContainsPlanet)
+        if (isContainsPlanet || isContainsCrystall)
         {
             Vector3 newPos = new Vector3(0, PlanetSpeed * PlanetDirection * Time.deltaTime, 0);
             transform.Rotate(newPos);
@@ -61,16 +69,12 @@ public class Orbit : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (!isContainsPlanet && !isContainsPlayer)
+        if (!isContainsPlanet && !isContainsPlayer && !isContainsCrystall)
             SuperManager.Instance.GameManager.RemoveOrbit(OrbitNum);
     }
 
     public void DrawOrbit()
     {
-
-        //float sizeValue = (int)((1f / ThetaScale) + 2f);
-        //size = (int)sizeValue;
-        //size++;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.material = LineMaterial;
         lineRenderer.startWidth = 0.02f;
@@ -94,52 +98,83 @@ public class Orbit : MonoBehaviour {
             angle += (360f / Segments);
         }
 
-        //Vector3 pos;
-        //float theta = 0f;
-        //for (int i = 0; i < size; i++)
-        //{
-        //    theta += (2.0f * Mathf.PI * ThetaScale);
-        //    float x = Radius * Mathf.Cos(theta);
-        //    float z = Radius * Mathf.Sin(theta);
-        //    x += gameObject.transform.position.x;
-        //    z += gameObject.transform.position.z;
-        //    pos = new Vector3(x, 0, z);
-        //    lineRenderer.SetPosition(i, pos);
-        //}
-
         if (Planet != null)
         {
             Planet.transform.localPosition = new Vector3(Radius, 0, 0);
         }
 
+        isContainsCrystall = false;
+        if (CrystallPivot != null)
+        {
+            if(Random.value <= CrystallSpawnChance)
+            {
+                SpawnCrystall();
+            }
+
+        }
+
         CurRadius = Radius;
     }
 
-    public void StartMovingCoroutine(float targetRad, bool changeOrbitNum, float time)
+    private void SpawnCrystall()
+    {
+        float crystallAngle = Random.Range(30, 330);
+        //if(crystallAngle <= orbitAngle + 20 && crystallAngle >= orbitAngle - 20)
+        //{
+        //    if (crystallAngle <= orbitAngle + 10)
+        //        crystallAngle += 45;
+        //    else
+        //        crystallAngle -= 45;
+        //}
+        CrystallPivot.Rotate(Vector3.up, crystallAngle);
+        CrystallPivot.FindChild("Crystall").localPosition = new Vector3(Radius, 0, 0);
+        CrystallPivot.SetParent(transform);
+        CrystallPivot.gameObject.SetActive(true);
+        isContainsCrystall = true;
+
+        SuperManager.Instance.GameManager.CurCrystallsCount++;
+    }
+
+    public void StartMovingCoroutine(float targetRad, bool changeOrbitNum, bool isStraight, float time)
     {
         if (startMovingOrbit != null)
             StopCoroutine(startMovingOrbit);
-        startMovingOrbit = StartMoveOrbits(targetRad, changeOrbitNum, time);
+        startMovingOrbit = StartMoveOrbits(targetRad, changeOrbitNum, isStraight, time);
         StartCoroutine(startMovingOrbit);
     }
 
     private IEnumerator startMovingOrbit;
-    private IEnumerator StartMoveOrbits(float targetRadius, bool changeOrbitNum, float time)
+    private IEnumerator StartMoveOrbits(float targetRadius, bool changeOrbitNum, bool isStraight, float time)
     {
+        var oldRad = CurRadius;
         Radius = targetRadius;
         if(changeOrbitNum)
             OrbitNum--;
         float t = 0;
         while (t < 1)
         {
-            float newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
-            CurRadius = newRadius;
-            t += 1/time * Time.deltaTime;
-            if(t > 0.05)
-                SuperManager.Instance.GameManager.isLevelUping = false;
-            if (t > 0.4 && t <= 1)
-                t = 1;
-            MoveOrbit(CurRadius);
+            float newRadius;
+            if (!isStraight)
+            {
+                newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
+                CurRadius = newRadius;
+                t += 1 / time * Time.deltaTime;
+                if (t > 0.05 && !isStraight)
+                    //SuperManager.Instance.GameManager.isLevelUping = false;
+                if (t > 0.4 && t <= 1)
+                    t = 1;
+                MoveOrbit(CurRadius);
+            }
+            else
+            {
+                newRadius = Mathf.Lerp(oldRad, targetRadius, t);
+                CurRadius = newRadius;
+                t += 1 / time * Time.deltaTime;
+                if(t == 0.5f)
+                    SuperManager.Instance.GameManager.isLevelUping = false;
+                MoveOrbit(CurRadius);
+            }
+           
 
 
             if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
@@ -150,6 +185,7 @@ public class Orbit : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
 
+        SuperManager.Instance.GameManager.isLevelUping = false;
         CurRadius = Radius;
         if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
         {
@@ -178,7 +214,9 @@ public class Orbit : MonoBehaviour {
         }
 
         if (Planet != null)
-                Planet.transform.localPosition = new Vector3(radius, 0, 0);
+            Planet.transform.localPosition = new Vector3(radius, 0, 0);
+        if (Crystall != null)
+            Crystall.localPosition = new Vector3(radius, 0, 0);
     }
 
     void StopMovingOrbit()

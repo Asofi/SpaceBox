@@ -15,6 +15,7 @@ public class SuperManager : MonoBehaviour {
     public GameManager GameManager;
     public GUIManager GUIManager;
     public ScoreManager ScoreManager;
+    public IAPManager IAPManager;
 
     public Player Player;
 }

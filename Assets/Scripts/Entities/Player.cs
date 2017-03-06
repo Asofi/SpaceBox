@@ -91,7 +91,6 @@ public class Player : MonoBehaviour {
             Vector3 newSize = Vector3.Lerp(curSize, target, t);
             transform.localScale = newSize;
             t += 1 / time * Time.deltaTime;
-            print(curSize);
             yield return new WaitForEndOfFrame();
         }
         transform.localScale = target;
@@ -126,25 +125,45 @@ public class Player : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        var planet = collision.transform.GetComponent<Planet>();
+        var tag = collision.gameObject.tag;
 
-        if (planet.Size <= Size)
+        switch (tag)
         {
-            collision.transform.parent.GetComponent<Orbit>().isContainsPlanet = false;
-            collision.gameObject.SetActive(false);
-            Size++;
-            if (resize != null)
-                StopCoroutine(resize);
-            resize = Resize(Size, 0.5f);
-            StartCoroutine(resize);
-            //transform.localScale = originSize * Size;
-            EventManager.AddScore();
+            case "Planet":
+                var planet = collision.transform.GetComponent<Planet>();
+
+                if (planet.Size <= Size)
+                {
+                    collision.transform.parent.GetComponent<Orbit>().isContainsPlanet = false;
+                    collision.gameObject.SetActive(false);
+                    Size++;
+                    if (resize != null)
+                        StopCoroutine(resize);
+                    resize = Resize(Size, 0.5f);
+                    StartCoroutine(resize);
+                    //transform.localScale = originSize * Size;
+                    EventManager.AddScore();
+                }
+                else
+                {
+                    EventManager.GameOver();
+                }
+                break;
+            case "Asteroid":
+                print("ASTEROID");
+                if (Size == 6)
+                    return;
+                StopAllCoroutines();
+                EventManager.GameOver();
+                break;
+            case "Crystall":
+                Crystall crystall = collision.gameObject.GetComponent<Crystall>();
+                collision.gameObject.SetActive(false);
+                crystall.ParentOrbit.isContainsCrystall = false;
+                EventManager.AddCrystall();
+                break;
         }
-        else
-        {
-            gameObject.SetActive(false);
-            EventManager.GameOver();
-        }
+        
     }
 
     void OnLevelUp()
@@ -153,7 +172,7 @@ public class Player : MonoBehaviour {
         Size = 1;
         if (resize != null)
             StopCoroutine(resize);
-        resize = Resize(Size, 2f);
+        resize = Resize(Size, 3f);
         StartCoroutine(resize);
 
         CubeOrbitR = minOrbit;
@@ -174,9 +193,11 @@ public class Player : MonoBehaviour {
     void OnGameOver()
     {
         StopAllCoroutines();
+        gameObject.SetActive(false);
         //Set origin size
         Size = 1;
         transform.localScale = originSize;
+        curSize = originSize;
 
     }
 }

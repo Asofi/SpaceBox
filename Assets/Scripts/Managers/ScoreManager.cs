@@ -42,7 +42,6 @@ public class ScoreManager : MonoBehaviour {
 
     private void OnGameStart()
     {
-        currentScores = 0;
         enabled = true;
     }
 
@@ -55,6 +54,7 @@ public class ScoreManager : MonoBehaviour {
             //SuperManager.Instance.ServicesManager.SendScoreToLeaderboard(best);
             //SuperManager.Instance.GUIManager.NewRecordLayout.SetActive(true);
         }
+        currentScores = 0;
         enabled = false;
     }
 }

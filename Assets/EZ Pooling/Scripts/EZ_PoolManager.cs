@@ -60,6 +60,8 @@ namespace EZ_Pooling
             {
                 var item = prefabPoolOptions[i];
                 var prefabTransform = item.prefabTransform;
+                if (prefabTransform == null)
+                    return;
                 var name = prefabTransform.name;
 
                 if (item.instancesToPreload <= 0 && !item.poolCanGrow)

@@ -8,6 +8,7 @@ public class GUIManager : MonoBehaviour {
     public CanvasGroup StartScreen;
 
     public Text CurrentScoreText;
+    public Text CrystallsText;
 
 
 
@@ -15,7 +16,8 @@ public class GUIManager : MonoBehaviour {
 	void Start () {
         EventManager.OnGameStart += OnGameStart;
         EventManager.OnGameOver += OnGameOver;
-        //EventManager.OnAddScore += OnAddScore;
+        EventManager.OnAddCrystall += OnAddCrystall;
+        CrystallsText.text = "Crystalls: " + SuperManager.Instance.IAPManager.Crystalls;
     }
 
 
@@ -39,6 +41,14 @@ public class GUIManager : MonoBehaviour {
         }
     }
 
+    public void OnAddCrystall()
+    {
+        CrystallsText.text = "Crystalls: " + SuperManager.Instance.IAPManager.Crystalls;
+    }
+
+    /// <summary>
+    /// Вызывается в ScoreManager
+    /// </summary>
     public void AddScore()
     {
         CurrentScoreText.text = ScoreManager.currentScores.ToString();
@@ -47,6 +57,7 @@ public class GUIManager : MonoBehaviour {
     void OnGameStart()
     {
         GameStateManager.GameState = GameStateManager.GameStates.InGame;
+        CurrentScoreText.text = ScoreManager.currentScores.ToString();
     }
 
     void OnGameOver()

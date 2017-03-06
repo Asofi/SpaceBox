@@ -14,9 +14,13 @@ public class Asteroid : MonoBehaviour {
     private MeshRenderer mRenderer;
     private Rigidbody mRigid;
     public ParticleSystem Expl;
+    private bool deadPlaying = false;
 
     private void Awake()
     {
+        EventManager.OnLevelUp += DestroyAsteroid;
+        EventManager.OnGameOver += DestroyAsteroid;
+
         mMeshFilter = transform.FindChild("Graphics").GetComponent<MeshFilter>();
         mRenderer = transform.FindChild("Graphics").GetComponent<MeshRenderer>();
         mRigid = GetComponent<Rigidbody>();
@@ -38,17 +42,26 @@ public class Asteroid : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
+        DestroyAsteroid();
+    }
+
+    IEnumerator delayedDespawn;
+    IEnumerator DelayedDespawn(float time)
+    {
+        deadPlaying = true;
         Expl.Play();
         mRenderer.enabled = false;
         GetComponent<Collider>().enabled = false;
         mRigid.velocity = Vector3.zero;
-        StartCoroutine(DelayedDespawn(4));
-    }
-
-    IEnumerator DelayedDespawn(float time)
-    {
         yield return new WaitForSeconds(time);
         EZ_Pooling.EZ_PoolManager.Despawn(transform);
+        deadPlaying = false;
+    }
+
+    void DestroyAsteroid()
+    {
+        if (!deadPlaying && gameObject.activeSelf)
+            StartCoroutine(DelayedDespawn(4));
     }
 
 
