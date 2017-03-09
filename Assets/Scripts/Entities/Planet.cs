@@ -9,6 +9,7 @@ public class Planet : MonoBehaviour, IComparable<Planet>
     public float Speed;
     public int Size;
     private int direction;
+    public int Orbit;
 
     public Mesh[] Meshes;
     public Material[] Mats;
@@ -29,7 +30,7 @@ public class Planet : MonoBehaviour, IComparable<Planet>
         mMeshFilter.mesh = Meshes[num];
         mMeshRenderer.material = Mats[num];
 
-        Speed = UnityEngine.Random.Range(50, 100);
+        Speed = UnityEngine.Random.Range(60, 80);
         direction = UnityEngine.Random.value < 0.5 ? 1 : -1;
     }
 

@@ -68,4 +68,4 @@ MonoBehaviour:
   OrbitNum: 0
   DistanceToNext: 0
   DistanceToPrev: 0
-  CrystallSpawnChance: 0.3
+  CrystallSpawnChance: 0

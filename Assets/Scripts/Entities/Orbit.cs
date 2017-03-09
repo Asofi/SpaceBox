@@ -33,7 +33,7 @@ public class Orbit : MonoBehaviour {
     void Awake()
     {
         //planet = transform.FindChild("Planet");
-        PlanetSpeed = Random.Range(5, 50);
+        PlanetSpeed = Random.Range(5, 35);
         PlanetDirection = Random.value < 0.5 ? 1 : -1;
         Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
     }
@@ -148,8 +148,11 @@ public class Orbit : MonoBehaviour {
     {
         var oldRad = CurRadius;
         Radius = targetRadius;
-        if(changeOrbitNum)
+        if (changeOrbitNum)
+        {
             OrbitNum--;
+            Planet.GetComponent<Planet>().Orbit = OrbitNum;
+        }
         float t = 0;
         while (t < 1)
         {

@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour {
     public float ShakeAmount = 5;
     private Vector3 originCamPos;
 
-    private float startCamSize = 70;
+    private float startCamSize = 60;
     private float curCamSize;
 
     
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour {
 
         StartOrbit = Instantiate(StartOrbitPrefab);
         Orbits.Add(StartOrbit);
-        startCamSize = 55 - ((Planets.Count - OrbitsCount) * 8);
+        startCamSize = 60 - ((Planets.Count - OrbitsCount) * 8);
         curCamSize = startCamSize;
         originCamPos = Camera.main.transform.localPosition;
     }
@@ -94,11 +94,11 @@ public class GameManager : MonoBehaviour {
 
             if (i == 0)
             {
-                radius = prevOrbit.Radius + orbitScript.Planet.GetComponent<Planet>().Size /2;
+                radius = prevOrbit.Radius /*+ orbitScript.Planet.GetComponent<Planet>().Size*/ + 5;
 
             }
             else
-                radius = /*prevOrbit.Radius*/ Radiuses[i-1] + prevOrbit.Planet.GetComponent<Planet>().Size + 1.5f * orbitScript.Planet.GetComponent<Planet>().Size /2;
+                radius = Radiuses[i-1] + 5 /*prevOrbit.Planet.GetComponent<Planet>().Size + orbitScript.Planet.GetComponent<Planet>().Size/2*/;
 
 
             Orbits.Add(orbitScript);
@@ -110,6 +110,7 @@ public class GameManager : MonoBehaviour {
             radius += extraRad;
             orbitScript.Radius = radius;
             orbitScript.OrbitNum = i + 1;
+            planet.GetComponent<Planet>().Orbit = orbitScript.OrbitNum;
 
             prevOrbit.DistanceToNext = orbitScript.DistanceToPrev;
 
@@ -165,7 +166,7 @@ public class GameManager : MonoBehaviour {
             }
             else
             {
-                Orbits[i].StartMovingCoroutine(Orbits[i].Radius - removedOrbitsDistToNext + Orbits[orbitNum].Planet.GetComponent<Planet>().Size * 2, true, false, 4);
+                Orbits[i].StartMovingCoroutine(Orbits[i].Radius - removedOrbitsDistToNext/* + Orbits[orbitNum].Planet.GetComponent<Planet>().Size * 2*/, true, false, 4);
 
             }
         }

@@ -131,7 +131,8 @@ public class Player : MonoBehaviour {
         {
             case "Planet":
                 var planet = collision.transform.GetComponent<Planet>();
-
+                if (planet.Orbit != curOrbitNum)
+                    return;
                 if (planet.Size <= Size)
                 {
                     collision.transform.parent.GetComponent<Orbit>().isContainsPlanet = false;
