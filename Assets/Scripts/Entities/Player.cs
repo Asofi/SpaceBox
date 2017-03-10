@@ -30,15 +30,15 @@ public class Player : MonoBehaviour {
 
         minOrbit = SuperManager.Instance.GameManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
-        curOrbitNum = 0;
-        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
+        curOrbitNum = 1;
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
 
     }
 	
 	void Update () {
 
-        Vector3 newPos = new Vector3(0, (Speed - curOrbitNum * 10) * direction * Time.deltaTime, 0);
+        Vector3 newPos = new Vector3(0, (Speed - (curOrbitNum-1) * 10) * direction * Time.deltaTime, 0);
         PlayerPivot.Rotate(newPos);
         transform.localPosition = new Vector3(0, 0, CubeOrbitR);
 
@@ -57,7 +57,7 @@ public class Player : MonoBehaviour {
     {
         curOrbitObj.isContainsPlayer = false;
         curOrbitNum += dir;
-        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
         curOrbitObj.isContainsPlayer = true;
     }
 
@@ -104,12 +104,12 @@ public class Player : MonoBehaviour {
 
         if(dir == 1)
         {
-            if (curOrbitNum == SuperManager.Instance.GameManager.Orbits.Count-1)
+            if (curOrbitNum - 1 == SuperManager.Instance.GameManager.Orbits.Count-1)
                 return;
         }
         else
         {
-            if (curOrbitNum == 0)
+            if (curOrbitNum - 1 == 0)
                 return;
         }
 
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour {
         {
             StopCoroutine(move);
         }
-            move = Move(SuperManager.Instance.GameManager.Orbits[curOrbitNum]);
+            move = Move(SuperManager.Instance.GameManager.Orbits[curOrbitNum-1]);
         StartCoroutine(move);
 
     }
@@ -176,18 +176,18 @@ public class Player : MonoBehaviour {
         resize = Resize(Size, 3f);
         StartCoroutine(resize);
 
-        CubeOrbitR = minOrbit;
-        curOrbitNum = 0;
-        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
-        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+        curOrbitNum = 1;
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
+        CubeOrbitR = curOrbitObj.Radius;
+        //transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
     }
 
     void OnGameStart()
     {
         gameObject.SetActive(true);
-        CubeOrbitR = minOrbit;
-        curOrbitNum = 0;
-        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum];
+        curOrbitNum = 1;
+        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
+        CubeOrbitR = curOrbitObj.Radius;
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
     }
 

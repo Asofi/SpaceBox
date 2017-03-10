@@ -477,14 +477,16 @@ MonoBehaviour:
   MaxRadius: 0
   DistanceToFirstOrbit: 0
   Radiuses:
-  - 12.5
-  - 22
-  - 28
-  - 37
-  - 42
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
   CameraShakeTime: 4
   ShakeAmount: 0.5
   isLevelUping: 0
+  isFirstSession: 1
 --- !u!1 &618997121
 GameObject:
   m_ObjectHideFlags: 0
@@ -2063,19 +2065,6 @@ MonoBehaviour:
     isPoolExpanded: 1
     showDebugLog: 0
     poolCanGrow: 1
-    cullDespawned: 0
-    cullAbove: 10
-    cullDelay: 2
-    cullAmount: 1
-    enableHardLimit: 0
-    hardLimit: 10
-    recycle: 0
-  - prefabTransform: {fileID: 4985002132046384, guid: 8b50d93d6fe33b3428f29fb3440356a3,
-      type: 2}
-    instancesToPreload: 5
-    isPoolExpanded: 1
-    showDebugLog: 0
-    poolCanGrow: 0
     cullDespawned: 0
     cullAbove: 10
     cullDelay: 2

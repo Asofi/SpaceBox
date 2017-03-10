@@ -23,8 +23,6 @@ public class Orbit : MonoBehaviour {
     public bool isContainsPlayer = false;
     public bool isContainsCrystall = false;
     public int OrbitNum;
-    public float DistanceToNext;
-    public float DistanceToPrev;
 
     private float orbitAngle;
 
@@ -32,16 +30,13 @@ public class Orbit : MonoBehaviour {
 
     void Awake()
     {
-        //planet = transform.FindChild("Planet");
         PlanetSpeed = Random.Range(5, 35);
-        PlanetDirection = Random.value < 0.5 ? 1 : -1;
+        PlanetDirection = /*Random.value < 0.5 ? 1 : -1;*/ -1;
         Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
     }
 
     private void Start()
     {
-        //EventManager.OnGameOver += StopMovingOrbit;
-        //EventManager.OnLevelUp += StopMovingOrbit;
 
         if (CompareTag("StartOrbit"))
         {
@@ -119,13 +114,7 @@ public class Orbit : MonoBehaviour {
     private void SpawnCrystall()
     {
         float crystallAngle = Random.Range(30, 330);
-        //if(crystallAngle <= orbitAngle + 20 && crystallAngle >= orbitAngle - 20)
-        //{
-        //    if (crystallAngle <= orbitAngle + 10)
-        //        crystallAngle += 45;
-        //    else
-        //        crystallAngle -= 45;
-        //}
+
         CrystallPivot.Rotate(Vector3.up, crystallAngle);
         CrystallPivot.FindChild("Crystall").localPosition = new Vector3(Radius, 0, 0);
         CrystallPivot.SetParent(transform);
@@ -162,8 +151,6 @@ public class Orbit : MonoBehaviour {
                 newRadius = Mathf.Lerp(CurRadius, targetRadius, t);
                 CurRadius = newRadius;
                 t += 1 / time * Time.deltaTime;
-                if (t > 0.05 && !isStraight)
-                    //SuperManager.Instance.GameManager.isLevelUping = false;
                 if (t > 0.4 && t <= 1)
                     t = 1;
                 MoveOrbit(CurRadius);
@@ -173,8 +160,6 @@ public class Orbit : MonoBehaviour {
                 newRadius = Mathf.Lerp(oldRad, targetRadius, t);
                 CurRadius = newRadius;
                 t += 1 / time * Time.deltaTime;
-                if(t == 0.5f)
-                    SuperManager.Instance.GameManager.isLevelUping = false;
                 MoveOrbit(CurRadius);
             }
            
@@ -187,8 +172,12 @@ public class Orbit : MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
+        if (SuperManager.Instance.GameManager.isLevelUping && isStraight)
+        {
+            print("end moving");
+            SuperManager.Instance.GameManager.isLevelUping = false;
 
-        SuperManager.Instance.GameManager.isLevelUping = false;
+        }
         CurRadius = Radius;
         if (isContainsPlayer && SuperManager.Instance.Player.IsOnOrbit)
         {
