@@ -174,7 +174,6 @@ public class Orbit : MonoBehaviour {
         }
         if (SuperManager.Instance.GameManager.isLevelUping && isStraight)
         {
-            print("end moving");
             SuperManager.Instance.GameManager.isLevelUping = false;
 
         }
@@ -187,7 +186,7 @@ public class Orbit : MonoBehaviour {
     }
 
 
-    void MoveOrbit(float radius)
+    public void MoveOrbit(float radius)
     {
         float x;
         float y = 0f;

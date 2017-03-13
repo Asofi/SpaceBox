@@ -152,7 +152,7 @@ public class Player : MonoBehaviour {
                 break;
             case "Asteroid":
                 print("ASTEROID");
-                if (Size == 6)
+                if (Size == SuperManager.Instance.GameManager.OrbitsCount + 1)
                     return;
                 StopAllCoroutines();
                 EventManager.GameOver();

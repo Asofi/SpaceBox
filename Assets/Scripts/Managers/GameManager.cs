@@ -7,7 +7,6 @@ public class GameManager : MonoBehaviour {
     public float TimeBetweenSpawnAsteroids = 5f;
     public float AsteroidSpawnRadius;
     public Transform AsteroidPrefab;
-    public Transform CrystallPrefab;
     public Transform OrbitPrefab;
     public Transform PlanetPool;
     public Transform Sun;
@@ -16,12 +15,16 @@ public class GameManager : MonoBehaviour {
     public List<Planet> Planets;
     public List<Orbit> Orbits;
     public int OrbitsCount;
+    [HideInInspector]
     public int CurPlanetCount;
+    [HideInInspector]
     public int CurCrystallsCount = 0;
     public float MinOrbitRadius;
-    public float MaxRadius;
     public float DistanceToFirstOrbit;
-    public float[] Radiuses;
+    private float[] Radiuses;
+    public float[] Radiuses3;
+    public float[] Radiuses4;
+    public float[] Radiuses5;
 
     public float CameraShakeTime = 1;
     public float ShakeAmount = 5;
@@ -39,11 +42,6 @@ public class GameManager : MonoBehaviour {
     public bool isFirstSession = true;
 
 
-	// Use this for initialization
-	void Awake () {
-        //MinOrbitRadius = 10 + DistanceToFirstOrbit;
-	}
-
     void Start()
     {
         EventManager.OnGameStart += OnGameStart;
@@ -53,6 +51,8 @@ public class GameManager : MonoBehaviour {
         EventManager.OnAddCrystall += OnAddCrystall;
         EventManager.OnAddCrystall += CheckIsLevelCleared;
         EventManager.OnLevelUp += OnLevelUp;
+
+        Radiuses = new float[6];
 
         startCamSize = 60 - ((Planets.Count - OrbitsCount) * 8);
         curCamSize = startCamSize;
@@ -98,7 +98,7 @@ public class GameManager : MonoBehaviour {
             var planet = orbitScript.Planet;
             planet.transform.SetParent(orbit);
             planet.SetActive(true);
-            if(extraRad == -0)
+            if (extraRad == -0)
             {
                 if (i == 0)
                 {
@@ -108,15 +108,30 @@ public class GameManager : MonoBehaviour {
                 {
                     radius = Radiuses[1] + distBetweenOrbits * i;
                 }
-            }
+              }
             else
             {
+                switch (OrbitsCount)
+                {
+                    case 3:
+                        RewriteRadiuses(Radiuses3);
+                        //Radiuses = Radiuses3;
+                        break;
+                    case 4:
+                        RewriteRadiuses(Radiuses4);
+                        //Radiuses = Radiuses4;
+                        break;
+                    case 5:
+                        RewriteRadiuses(Radiuses5);
+                        //Radiuses = Radiuses5;
+                        break;
+                }
                 radius = Radiuses[i];
             }
 
 
             Orbits.Add(orbitScript);
-            if (!isLevelUping) 
+            if (!isLevelUping)
                 Radiuses[i+1] = radius;
 
             radius += extraRad;
@@ -125,10 +140,15 @@ public class GameManager : MonoBehaviour {
             planet.GetComponent<Planet>().Orbit = orbitScript.OrbitNum;
 
             orbitScript.DrawOrbit();
-            MaxRadius = radius;
-
-
             prevOrbit = orbitScript;
+        }
+    }
+
+    void RewriteRadiuses(float[] rad)
+    {
+        for (int i = 0; i < rad.Length; i++)
+        {
+            Radiuses[i] = rad[i];
         }
     }
 
@@ -234,11 +254,11 @@ public class GameManager : MonoBehaviour {
         }
         mCam.transform.localPosition = originCamPos;
 
-        if (zoomCamera != null)
-            StopCoroutine(zoomCamera);
-        zoomCamera = ZoomCamera(2f, startCamSize);
-        //yield return new WaitForSeconds(0.2f);
-        StartCoroutine(zoomCamera);
+        //if (zoomCamera != null)
+        //    StopCoroutine(zoomCamera);
+        //zoomCamera = ZoomCamera(2f, startCamSize);
+        ////yield return new WaitForSeconds(0.2f);
+        //StartCoroutine(zoomCamera);
 
     }
     #endregion
@@ -296,6 +316,8 @@ public class GameManager : MonoBehaviour {
         curCamSize = startCamSize;
         CurPlanetCount = OrbitsCount;
         distBetweenOrbits = startDistBetweenOrbits;
+        OrbitsCount = Random.Range(3, 5);
+        CurPlanetCount = OrbitsCount;
         AddOrbits(70);
         for (int i = 0; i < Orbits.Count; i++)
         {
@@ -306,7 +328,8 @@ public class GameManager : MonoBehaviour {
     void OnGameStart()
     {
         print("game start");
-        if(StartOrbit == null)
+        OrbitsCount = Random.Range(3, 6);
+        if (StartOrbit == null)
         {
             StartOrbit = Instantiate(StartOrbitPrefab);
             Orbits.Add(StartOrbit);
