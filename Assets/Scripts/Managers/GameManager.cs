@@ -84,7 +84,6 @@ public class GameManager : MonoBehaviour {
 
     void AddOrbits(float extraRad)
     {
-        print("add orbits");
         Orbit prevOrbit = StartOrbit;
         if (extraRad == 0)
             Radiuses[0] = prevOrbit.Radius;
@@ -104,7 +103,6 @@ public class GameManager : MonoBehaviour {
                 if (i == 0)
                 {
                     radius = prevOrbit.Radius + distBetweenOrbits;
-                    print(orbitScript.OrbitNum + " " + radius);
                 }
                 else
                 {
