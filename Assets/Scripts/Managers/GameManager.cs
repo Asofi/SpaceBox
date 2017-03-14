@@ -4,7 +4,7 @@ using UnityEngine;
 using EZ_Pooling;
 
 public class GameManager : MonoBehaviour {
-    public float TimeBetweenSpawnAsteroids = 5f;
+    private float timeBetweenSpawnAsteroids;
     public float AsteroidSpawnRadius;
     public Transform AsteroidPrefab;
     public Transform OrbitPrefab;
@@ -63,13 +63,15 @@ public class GameManager : MonoBehaviour {
 
         StartOrbit = Instantiate(StartOrbitPrefab);
         Orbits.Add(StartOrbit);
+
+        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
     }
 
     IEnumerator SpawnAsteroids()
     {
         while (true)
         {
-            yield return new WaitForSeconds(TimeBetweenSpawnAsteroids);
+            yield return new WaitForSeconds(timeBetweenSpawnAsteroids);
             if (!isLevelUping)
             {
                 var pos = Math.RandomCircle(AsteroidSpawnRadius);
@@ -297,7 +299,10 @@ public class GameManager : MonoBehaviour {
 
     void OnLevelUp()
     {
+        ///Difficulty
+        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
 
+        ///Orbits
         StartOrbit.Planet.transform.SetParent(PlanetPool);
         StartOrbit.Planet.SetActive(false);
         Planets.Add(StartOrbit.Planet.GetComponent<Planet>());
@@ -314,9 +319,8 @@ public class GameManager : MonoBehaviour {
         //Camera.main.orthographicSize = startCamSize;
 
         curCamSize = startCamSize;
-        CurPlanetCount = OrbitsCount;
         distBetweenOrbits = startDistBetweenOrbits;
-        OrbitsCount = Random.Range(3, 5);
+        OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
         CurPlanetCount = OrbitsCount;
         AddOrbits(70);
         for (int i = 0; i < Orbits.Count; i++)
@@ -328,7 +332,7 @@ public class GameManager : MonoBehaviour {
     void OnGameStart()
     {
         print("game start");
-        OrbitsCount = Random.Range(3, 6);
+        OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
         if (StartOrbit == null)
         {
             StartOrbit = Instantiate(StartOrbitPrefab);

@@ -450,11 +450,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ff474e176ef614e89cbd7b7ee13cc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TimeBetweenSpawnAsteroids: 5
   AsteroidSpawnRadius: 130
   AsteroidPrefab: {fileID: 4239056999696574, guid: 6f8e4043c1968cb4ea86ad2599e894bd,
     type: 2}
-  CrystallPrefab: {fileID: 0}
   OrbitPrefab: {fileID: 4105864937025020, guid: 8ea2c6e2add2cf74090f2670893dbd3d,
     type: 2}
   PlanetPool: {fileID: 2113322328}
@@ -474,15 +472,7 @@ MonoBehaviour:
   CurPlanetCount: 0
   CurCrystallsCount: 0
   MinOrbitRadius: 10
-  MaxRadius: 0
   DistanceToFirstOrbit: 0
-  Radiuses:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
   Radiuses3:
   - 10
   - 19.16667
@@ -1164,6 +1154,55 @@ Transform:
   m_Father: {fileID: 1908171837}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &955899542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 955899543}
+  - component: {fileID: 955899544}
+  m_Layer: 0
+  m_Name: DifficultyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &955899543
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 955899542}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1908171837}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &955899544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 955899542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85c2170ce4a5e6d46b4b8204d09e9ac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Level: 0
+  WhenChangeOrbitsCount: 3
+  OrbitSpeedFactor: 0
+  MinAsteroidSpeed: 10
+  MaxAsteroidSpeed: 15
+  AsteroidSpeedStep: 1
+  MinAsteroidSpawnTime: 1
+  MaxAsteroidSpawnTime: 5
+  AsteroidSpawnTimeDecrease: 0.2
 --- !u!1 &1047274484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1715,6 +1754,7 @@ Transform:
   - {fileID: 731300057}
   - {fileID: 899318749}
   - {fileID: 1791700130}
+  - {fileID: 955899543}
   - {fileID: 2076211651}
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -1734,6 +1774,7 @@ MonoBehaviour:
   GUIManager: {fileID: 731300058}
   ScoreManager: {fileID: 899318748}
   IAPManager: {fileID: 1791700131}
+  DifficultyManager: {fileID: 955899544}
   Player: {fileID: 855344941}
 --- !u!1001 &1977498252
 Prefab:
@@ -2063,7 +2104,7 @@ Transform:
   m_Children:
   - {fileID: 2113322328}
   m_Father: {fileID: 1908171837}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2076211652
 MonoBehaviour:

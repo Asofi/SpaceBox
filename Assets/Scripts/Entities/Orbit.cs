@@ -182,7 +182,6 @@ public class Orbit : MonoBehaviour {
         {
             SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
         }
-        //MoveOrbit(CurRadius);
     }
 
 

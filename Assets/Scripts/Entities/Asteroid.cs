@@ -35,7 +35,7 @@ public class Asteroid : MonoBehaviour {
         mMeshFilter.mesh = Meshes[num];
         transform.LookAt(SuperManager.Instance.GameManager.Sun);
 
-        Speed = Random.Range(10, 15);
+        Speed = SuperManager.Instance.DifficultyManager.GetAsteroidSpeed();
         mRigid.AddForce(transform.forward * 100 * Speed);
 
     }
