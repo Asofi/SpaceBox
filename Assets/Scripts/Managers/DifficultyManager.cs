@@ -24,13 +24,29 @@ public class DifficultyManager : MonoBehaviour {
     private float asteroidSpawnTime;
     public float AsteroidSpawnTimeDecrease = 0.25f;
 
-	// Use this for initialization
-	void Start () {
+    [Space]
+    [Header("Resize")]
+    public Transform[] ObjectsToResize;
+    private Vector3[] originSizes;
+    private Vector3[] startCubeSizes;
+    private float resizeFactor;
+
+    // Use this for initialization
+    void Start () {
         EventManager.OnGameStart += OnGameStart;
         EventManager.OnLevelUp += OnLevelUp;
         originMinSpeed = MinAsteroidSpeed;
         originMaxSpeed = MaxAsteroidSpeed;
         asteroidSpawnTime = MaxAsteroidSpawnTime;
+        originSizes = new Vector3[ObjectsToResize.Length];
+        startCubeSizes = new Vector3[3];
+        for (int i = 0; i < ObjectsToResize.Length; i++)
+            originSizes[i] = ObjectsToResize[i].localScale;
+
+        for (int i = 0; i < 3; i++)
+            startCubeSizes[i] = originSizes[0] * (5f/(i+3));
+
+        ChangeSizes();
     }
 
     void OnGameStart()
@@ -40,6 +56,7 @@ public class DifficultyManager : MonoBehaviour {
         MinAsteroidSpeed = originMinSpeed;
         MaxAsteroidSpeed = originMaxSpeed;
         orbitsCount = 3;
+        ChangeSizes();
         
     }
 
@@ -48,6 +65,9 @@ public class DifficultyManager : MonoBehaviour {
         Level++;
         if (Level % WhenChangeOrbitsCount == 0 && orbitsCount < 5)
             orbitsCount++;
+
+        ChangeSizes();
+
         float newChance = asteroidSpawnTime - AsteroidSpawnTimeDecrease;
         asteroidSpawnTime = Mathf.Clamp(newChance, MinAsteroidSpawnTime, MaxAsteroidSpawnTime);
 
@@ -68,5 +88,17 @@ public class DifficultyManager : MonoBehaviour {
     public int GetOrbitsCount()
     {
         return orbitsCount;
+    }
+
+    void ChangeSizes()
+    {
+        float scaleFactor = 5 / (float)orbitsCount;
+        for (int i = 0; i < ObjectsToResize.Length; i++)
+            ObjectsToResize[i].localScale = originSizes[i] * scaleFactor;
+    }
+
+    public Vector3 GetCubeSize()
+    {
+        return startCubeSizes[orbitsCount - 3];
     }
 }

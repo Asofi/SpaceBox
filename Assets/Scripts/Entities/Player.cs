@@ -25,14 +25,12 @@ public class Player : MonoBehaviour {
         EventManager.OnGameOver += OnGameOver;
         EventManager.OnLevelUp += OnLevelUp;
 
-        originSize = transform.localScale;
-        curSize = originSize;
-
         minOrbit = SuperManager.Instance.GameManager.MinOrbitRadius;
         CubeOrbitR = minOrbit;
         curOrbitNum = 1;
         curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, CubeOrbitR);
+        originSize = SuperManager.Instance.DifficultyManager.GetCubeSize();
 
     }
 	
@@ -41,6 +39,15 @@ public class Player : MonoBehaviour {
         Vector3 newPos = new Vector3(0, (Speed - (curOrbitNum-1) * 10) * direction * Time.deltaTime, 0);
         PlayerPivot.Rotate(newPos);
         transform.localPosition = new Vector3(0, 0, CubeOrbitR);
+
+        //if (SwipeManager.Instance.IsSwiping(SwipeDirection.Up))
+        //    StartMoving(-1);
+        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Down))
+        //    StartMoving(1);
+        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Left))
+        //    ChangeDirection(false);
+        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Right))
+        //    ChangeDirection(true);
 
     }
 
@@ -176,6 +183,7 @@ public class Player : MonoBehaviour {
 
     void OnLevelUp()
     {
+        originSize = SuperManager.Instance.DifficultyManager.GetCubeSize();
         StopAllCoroutines();
         Size = 1;
         if (resize != null)
@@ -191,6 +199,9 @@ public class Player : MonoBehaviour {
 
     void OnGameStart()
     {
+        originSize = SuperManager.Instance.DifficultyManager.GetCubeSize();
+        curSize = originSize;
+
         gameObject.SetActive(true);
         curOrbitNum = 1;
         curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];

@@ -729,7 +729,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47a953a9be491894d9ba88864650490c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 100
+  Speed: 75
   PlayerPivot: {fileID: 889283682}
   Size: 1
   CubeOrbitR: 0
@@ -1203,6 +1203,13 @@ MonoBehaviour:
   MinAsteroidSpawnTime: 1
   MaxAsteroidSpawnTime: 5
   AsteroidSpawnTimeDecrease: 0.2
+  ObjectsToResize:
+  - {fileID: 855344940}
+  - {fileID: 27441321}
+  - {fileID: 1441426241}
+  - {fileID: 2075029978}
+  - {fileID: 308071051}
+  - {fileID: 1977498254}
 --- !u!1 &1047274484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1851,7 +1858,7 @@ MonoBehaviour:
     m_Bits: 2048
   PlayerPivot: {fileID: 889283682}
   SwipeResistanceX: 50
-  SwipeResistanceY: 200
+  SwipeResistanceY: 50
 --- !u!1 &1908171836
 GameObject:
   m_ObjectHideFlags: 0
