@@ -44,6 +44,13 @@ public class Player : MonoBehaviour {
 
     }
 
+    public void ChangeDirection()
+    {
+        direction = -direction;
+        transform.Rotate(Vector3.forward * 180);
+        isGoingRight = !isGoingRight;
+    }
+
     public void ChangeDirection(bool right)
     {
         if (isGoingRight == right)

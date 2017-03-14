@@ -65,6 +65,10 @@ public class GameManager : MonoBehaviour {
         Orbits.Add(StartOrbit);
 
         timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
+
+        Radiuses3 = CalculateRadiuses(3);
+        Radiuses4 = CalculateRadiuses(4);
+        Radiuses5 = CalculateRadiuses(5);
     }
 
     IEnumerator SpawnAsteroids()
@@ -146,6 +150,15 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    float[] CalculateRadiuses(int count)
+    {
+        float[] radiuses = new float[count+1];
+        float distBetweenOrbits = (distToScreenCorner - MinOrbitRadius) / count;
+        for (int i = 0; i <= count; i++)
+            radiuses[i] = MinOrbitRadius + distBetweenOrbits * i;
+        
+        return radiuses;
+    }
     void RewriteRadiuses(float[] rad)
     {
         for (int i = 0; i < rad.Length; i++)
@@ -333,6 +346,7 @@ public class GameManager : MonoBehaviour {
     {
         print("game start");
         OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
+        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
         if (StartOrbit == null)
         {
             StartOrbit = Instantiate(StartOrbitPrefab);
