@@ -14,18 +14,21 @@ public class Planet : MonoBehaviour, IComparable<Planet>
     public Mesh[] Meshes;
     public Material[] Mats;
 
-    private MeshFilter mMeshFilter;
-    private MeshRenderer mMeshRenderer;
+    Orbit ParentOrbit;
+    public Transform Graphics;
+    public MeshFilter mMeshFilter;
+    public MeshRenderer mMeshRenderer;
 
     private void Awake()
     {
-        mMeshFilter = GetComponent<MeshFilter>();
-        mMeshRenderer = GetComponent<MeshRenderer>();
+        //mMeshFilter = GetComponent<MeshFilter>();
+        //mMeshRenderer = GetComponent<MeshRenderer>();
         //EventManager.OnGameStart += OnGameStart;
     }
 
     private void OnEnable()
     {
+        ParentOrbit = transform.parent.GetComponent<Orbit>();
         int num = UnityEngine.Random.Range(0, Meshes.Length);
         mMeshFilter.mesh = Meshes[num];
         mMeshRenderer.material = Mats[num];
@@ -36,8 +39,11 @@ public class Planet : MonoBehaviour, IComparable<Planet>
 
     // Update is called once per frame
     void Update () {
-        Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
+        Vector3 newPos = new Vector3(0, -ParentOrbit.PlanetSpeed * ParentOrbit.PlanetDirection * Time.deltaTime, 0);
         transform.Rotate(newPos, Space.World);
+        Graphics.localEulerAngles = new Vector3(0, Graphics.localEulerAngles.y + Speed * Time.deltaTime, 0);
+        //Vector3 newPos = new Vector3(0, Speed * direction * Time.deltaTime, 0);
+        //transform.Rotate(newPos, Space.World);
     }
 
     public int CompareTo(Planet other)

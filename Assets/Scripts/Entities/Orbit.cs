@@ -30,7 +30,7 @@ public class Orbit : MonoBehaviour {
 
     void Awake()
     {
-        PlanetSpeed = Random.Range(5, 35);
+        //PlanetSpeed = Random.Range(10, 35);
         PlanetDirection = /*Random.value < 0.5 ? 1 : -1;*/ -1;
         Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
     }
@@ -78,7 +78,7 @@ public class Orbit : MonoBehaviour {
         lineRenderer.numPositions = Segments + 1;
 
         float x;
-        float y = -5f;
+        float y = -10f;
         float z;
 
         float angle = 20f;
@@ -172,9 +172,9 @@ public class Orbit : MonoBehaviour {
             }
             yield return new WaitForEndOfFrame();
         }
-        if (SuperManager.Instance.GameManager.isLevelUping && isStraight)
+        if (SuperManager.Instance.GameManager.IsLevelUping && isStraight)
         {
-            SuperManager.Instance.GameManager.isLevelUping = false;
+            SuperManager.Instance.GameManager.IsLevelUping = false;
 
         }
         CurRadius = Radius;
@@ -188,7 +188,7 @@ public class Orbit : MonoBehaviour {
     public void MoveOrbit(float radius)
     {
         float x;
-        float y = -5f;
+        float y = -10f;
         float z;
 
         float angle = 20f;

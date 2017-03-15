@@ -52,7 +52,7 @@ public class SwipeManager : MonoBehaviour {
     }
 	
 	void Update () {
-        if (SuperManager.Instance.GameManager.isLevelUping)
+        if (SuperManager.Instance.GameManager.IsLevelUping)
             return;
         Swipe();
         //Direction = SwipeDirection.None;

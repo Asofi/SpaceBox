@@ -9,7 +9,10 @@ public class DifficultyManager : MonoBehaviour {
     [Header("Orbits")]
     public int WhenChangeOrbitsCount;
     private int orbitsCount = 3;
-    public float OrbitSpeedFactor;
+    public Vector2 OrbitMinSpeed;
+    public Vector2 OrbitMaxSpeed;
+    private Vector2 orbitCurSpeed;
+    public float OrbitSpeedStep;
     [Space]
     [Header("Asteroids")]
     public float MinAsteroidSpeed;
@@ -24,6 +27,11 @@ public class DifficultyManager : MonoBehaviour {
     private float asteroidSpawnTime;
     public float AsteroidSpawnTimeDecrease = 0.25f;
 
+
+    public Transform AsteroidPrefab;
+    private float timeBetweenSpawnAsteroids;
+    public float AsteroidSpawnRadius;
+
     [Space]
     [Header("Resize")]
     public Transform[] ObjectsToResize;
@@ -34,6 +42,7 @@ public class DifficultyManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         EventManager.OnGameStart += OnGameStart;
+        EventManager.OnGameOver += OnGameOver;
         EventManager.OnLevelUp += OnLevelUp;
         originMinSpeed = MinAsteroidSpeed;
         originMaxSpeed = MaxAsteroidSpeed;
@@ -57,8 +66,17 @@ public class DifficultyManager : MonoBehaviour {
         MaxAsteroidSpeed = originMaxSpeed;
         orbitsCount = 3;
 
+        orbitCurSpeed = OrbitMinSpeed;
+
         ChangeSizes();
+
+        StartCoroutine(SpawnAsteroids());
         
+    }
+
+    void OnGameOver()
+    {
+        StopAllCoroutines();
     }
 
     void OnLevelUp()
@@ -74,6 +92,9 @@ public class DifficultyManager : MonoBehaviour {
 
         MinAsteroidSpeed += AsteroidSpeedStep;
         MaxAsteroidSpeed += AsteroidSpeedStep;
+
+        orbitCurSpeed.x = Mathf.Clamp(orbitCurSpeed.x + OrbitSpeedStep, OrbitMinSpeed.x, OrbitMaxSpeed.x);
+        orbitCurSpeed.y = Mathf.Clamp(orbitCurSpeed.y + OrbitSpeedStep, OrbitMinSpeed.y, OrbitMaxSpeed.y);
     }
 
     public float GetAsteroidSpeed()
@@ -81,9 +102,9 @@ public class DifficultyManager : MonoBehaviour {
         return Random.Range(MinAsteroidSpeed, MaxAsteroidSpeed);
     }
 
-    public float GetAsteroidSpawnTime()
+    public float GetOrbitSpeed()
     {
-        return asteroidSpawnTime;
+        return Random.Range(orbitCurSpeed.x, orbitCurSpeed.y);
     }
 
     public int GetOrbitsCount()
@@ -101,5 +122,20 @@ public class DifficultyManager : MonoBehaviour {
     public Vector3 GetCubeSize()
     {
         return startCubeSizes[orbitsCount - 3];
+    }
+
+    IEnumerator SpawnAsteroids()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(asteroidSpawnTime);
+            if (!SuperManager.Instance.GameManager.IsLevelUping)
+            {
+                var pos = Math.RandomCircle(AsteroidSpawnRadius);
+                EZ_Pooling.EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
+            }
+
+        }
+
     }
 }

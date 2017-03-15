@@ -6,7 +6,7 @@
     public static event GameEvent OnGameStart, OnGameOver,
                                     OnAddScore, OnMute,
                                     OnAddCrystall, OnLevelUp,
-                                    OnMoveOrbit, OnKillAll;
+                                    OnMoveOrbit, OnTimerStart;
 
     public static void GameOver()
     {
@@ -44,9 +44,9 @@
         if (OnMoveOrbit != null) OnMoveOrbit();
     }
 
-    public static void KillAll()
+    public static void TimerStart()
     {
-        if (OnKillAll != null) OnKillAll();
+        if (OnTimerStart != null) OnTimerStart();
     }
 
 }

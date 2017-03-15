@@ -4,9 +4,13 @@ using UnityEngine;
 using EZ_Pooling;
 
 public class GameManager : MonoBehaviour {
-    private float timeBetweenSpawnAsteroids;
-    public float AsteroidSpawnRadius;
-    public Transform AsteroidPrefab;
+
+    public static Vector4 WorldsSpaceScreenBorders;
+    public static float BorderOffset = 50;
+
+    //private float timeBetweenSpawnAsteroids;
+    //public float AsteroidSpawnRadius;
+    //public Transform AsteroidPrefab;
     public Transform OrbitPrefab;
     public Transform PlanetPool;
     public Transform Sun;
@@ -36,9 +40,27 @@ public class GameManager : MonoBehaviour {
     private float distToScreenCorner;
     private float distBetweenOrbits;
     private float startDistBetweenOrbits;
-    
 
-    public bool isLevelUping = false;
+
+    private bool isLevelUping = false;
+    public bool IsLevelUping
+    {
+        get
+        {
+            return isLevelUping;
+        }
+
+        set
+        {
+            if (isLevelUping != value)
+            {
+                isLevelUping = value;
+                if (isLevelUping == false)
+                    EventManager.TimerStart();
+            }
+        }
+    }
+
     public bool isFirstSession = true;
 
 
@@ -51,6 +73,7 @@ public class GameManager : MonoBehaviour {
         EventManager.OnAddCrystall += OnAddCrystall;
         EventManager.OnAddCrystall += CheckIsLevelCleared;
         EventManager.OnLevelUp += OnLevelUp;
+        DefineScreenBorders();
 
         Radiuses = new float[6];
 
@@ -64,26 +87,35 @@ public class GameManager : MonoBehaviour {
         StartOrbit = Instantiate(StartOrbitPrefab);
         Orbits.Add(StartOrbit);
 
-        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
+        //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
 
         Radiuses3 = CalculateRadiuses(3);
         Radiuses4 = CalculateRadiuses(4);
         Radiuses5 = CalculateRadiuses(5);
+
     }
 
-    IEnumerator SpawnAsteroids()
+    //IEnumerator SpawnAsteroids()
+    //{
+    //    while (true)
+    //    {
+    //        yield return new WaitForSeconds(timeBetweenSpawnAsteroids);
+    //        if (!IsLevelUping)
+    //        {
+    //            var pos = Math.RandomCircle(AsteroidSpawnRadius);
+    //            EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
+    //        }
+
+    //    }
+
+    //}
+
+    static void DefineScreenBorders()
     {
-        while (true)
-        {
-            yield return new WaitForSeconds(timeBetweenSpawnAsteroids);
-            if (!isLevelUping)
-            {
-                var pos = Math.RandomCircle(AsteroidSpawnRadius);
-                EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
-            }
-
-        }
-
+        WorldsSpaceScreenBorders.x = Camera.main.ScreenToWorldPoint(new Vector2(0 + BorderOffset, 0 + BorderOffset)).z;
+        WorldsSpaceScreenBorders.y = Camera.main.ScreenToWorldPoint(new Vector2(0 + BorderOffset, 0 + BorderOffset * 1.5f)).x;
+        WorldsSpaceScreenBorders.z = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width - BorderOffset, 0)).z;
+        WorldsSpaceScreenBorders.w = Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height - BorderOffset * 1.5f)).x;
     }
 
     #region OrbitsControll
@@ -99,7 +131,7 @@ public class GameManager : MonoBehaviour {
             float radius;
             Transform orbit = Instantiate(OrbitPrefab);
             Orbit orbitScript = orbit.GetComponent<Orbit>();
-
+            orbitScript.PlanetSpeed = SuperManager.Instance.DifficultyManager.GetOrbitSpeed();
             orbitScript.Planet = GetPlanet();
             var planet = orbitScript.Planet;
             planet.transform.SetParent(orbit);
@@ -137,7 +169,7 @@ public class GameManager : MonoBehaviour {
 
 
             Orbits.Add(orbitScript);
-            if (!isLevelUping)
+            if (!IsLevelUping)
                 Radiuses[i+1] = radius;
 
             radius += extraRad;
@@ -147,6 +179,9 @@ public class GameManager : MonoBehaviour {
 
             orbitScript.DrawOrbit();
             prevOrbit = orbitScript;
+
+            if(extraRad == 0)
+                EventManager.TimerStart();
         }
     }
 
@@ -255,6 +290,7 @@ public class GameManager : MonoBehaviour {
     }
 
     private IEnumerator cameraShake;
+
     private IEnumerator CameraShake()
     {
         float shakeTime = CameraShakeTime;
@@ -299,7 +335,7 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator ChangeLevel()
     {
-        isLevelUping = true;
+        IsLevelUping = true;
         StartOrbit = Orbits[0];
         yield return new WaitForSeconds(1f);
         if (cameraShake != null)
@@ -313,7 +349,7 @@ public class GameManager : MonoBehaviour {
     void OnLevelUp()
     {
         ///Difficulty
-        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
+        //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
 
         ///Orbits
         StartOrbit.Planet.transform.SetParent(PlanetPool);
@@ -346,7 +382,7 @@ public class GameManager : MonoBehaviour {
     {
         print("game start");
         OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
-        timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
+        //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
         if (StartOrbit == null)
         {
             StartOrbit = Instantiate(StartOrbitPrefab);
@@ -358,7 +394,7 @@ public class GameManager : MonoBehaviour {
         curCamSize = startCamSize;
         CurPlanetCount = OrbitsCount;
         AddOrbits(0);
-        StartCoroutine(SpawnAsteroids());
+        //StartCoroutine(SpawnAsteroids());
 
     }
 
