@@ -78,7 +78,7 @@ public class Orbit : MonoBehaviour {
         lineRenderer.numPositions = Segments + 1;
 
         float x;
-        float y = 0f;
+        float y = -5f;
         float z;
 
         float angle = 20f;
@@ -188,7 +188,7 @@ public class Orbit : MonoBehaviour {
     public void MoveOrbit(float radius)
     {
         float x;
-        float y = 0f;
+        float y = -5f;
         float z;
 
         float angle = 20f;

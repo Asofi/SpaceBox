@@ -468,7 +468,7 @@ MonoBehaviour:
   - {fileID: 308071052}
   - {fileID: 1977498253}
   Orbits: []
-  OrbitsCount: 3
+  OrbitsCount: 5
   CurPlanetCount: 0
   CurCrystallsCount: 0
   MinOrbitRadius: 10

@@ -44,7 +44,7 @@ public class DifficultyManager : MonoBehaviour {
             originSizes[i] = ObjectsToResize[i].localScale;
 
         for (int i = 0; i < 3; i++)
-            startCubeSizes[i] = originSizes[0] * (5f/(i+3));
+            startCubeSizes[i] = originSizes[0] * ((5f+(5-(i+3)))/(i+3));
 
         ChangeSizes();
     }
@@ -56,6 +56,7 @@ public class DifficultyManager : MonoBehaviour {
         MinAsteroidSpeed = originMinSpeed;
         MaxAsteroidSpeed = originMaxSpeed;
         orbitsCount = 3;
+
         ChangeSizes();
         
     }
@@ -92,7 +93,7 @@ public class DifficultyManager : MonoBehaviour {
 
     void ChangeSizes()
     {
-        float scaleFactor = 5 / (float)orbitsCount;
+        float scaleFactor = (5 + (5-orbitsCount)) / (float)orbitsCount;
         for (int i = 0; i < ObjectsToResize.Length; i++)
             ObjectsToResize[i].localScale = originSizes[i] * scaleFactor;
     }
