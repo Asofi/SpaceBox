@@ -8,7 +8,7 @@ public class Orbit : MonoBehaviour {
     public Material LineMaterial;
     public int Segments; //Total number of points in circle
     public float Radius;
-    LineRenderer lineRenderer;
+    public LineRenderer mLineRenderer;
     public float CurRadius;
 
     [Space]
@@ -32,17 +32,18 @@ public class Orbit : MonoBehaviour {
     {
         //PlanetSpeed = Random.Range(10, 35);
         PlanetDirection = /*Random.value < 0.5 ? 1 : -1;*/ -1;
-        Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
-        lineRenderer = GetComponent<LineRenderer>();
+        if(OrbitNum == 1)
+            Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
+        mLineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Start()
     {
 
-        if (CompareTag("StartOrbit"))
-        {
-            DrawOrbit();
-        }
+        //if (CompareTag("StartOrbit"))
+        //{
+        //    //DrawOrbit();
+        //}
 
         //if (Planet == null)
         //{
@@ -67,18 +68,18 @@ public class Orbit : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (!isContainsPlanet && !isContainsPlayer && !isContainsCrystall)
+        if (!isContainsPlanet && !isContainsPlayer && !isContainsCrystall && mLineRenderer.enabled)
             SuperManager.Instance.GameManager.RemoveOrbit(OrbitNum);
     }
 
     public void DrawOrbit()
     {
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.material = LineMaterial;
-        lineRenderer.startWidth = 0.02f;
-        lineRenderer.endWidth = 0.02f;
-        lineRenderer.widthMultiplier = 13;
-        lineRenderer.numPositions = Segments + 1;
+        mLineRenderer = gameObject.AddComponent<LineRenderer>();
+        mLineRenderer.material = LineMaterial;
+        mLineRenderer.startWidth = 0.02f;
+        mLineRenderer.endWidth = 0.02f;
+        mLineRenderer.widthMultiplier = 13;
+        mLineRenderer.numPositions = Segments + 1;
 
         float x;
         float y = -10f;
@@ -91,7 +92,7 @@ public class Orbit : MonoBehaviour {
             x = Mathf.Sin(Mathf.Deg2Rad * angle) * Radius;
             z = Mathf.Cos(Mathf.Deg2Rad * angle) * Radius;
 
-            lineRenderer.SetPosition(i, new Vector3(x, y, z));
+            mLineRenderer.SetPosition(i, new Vector3(x, y, z));
 
             angle += (360f / Segments);
         }
@@ -185,11 +186,13 @@ public class Orbit : MonoBehaviour {
         {
             SuperManager.Instance.Player.transform.localPosition = new Vector3(0, 0, CurRadius);
         }
+        MoveOrbit(targetRadius);
     }
 
 
     public void MoveOrbit(float radius)
     {
+        CurRadius = radius;
         float x;
         float y = -10f;
         float z;
@@ -201,7 +204,7 @@ public class Orbit : MonoBehaviour {
             x = Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
             z = Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
 
-            lineRenderer.SetPosition(i, new Vector3(x, y, z));
+            mLineRenderer.SetPosition(i, new Vector3(x, y, z));
 
             angle += (360f / Segments);
         }
