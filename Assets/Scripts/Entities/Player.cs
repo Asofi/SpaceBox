@@ -62,7 +62,7 @@ public class Player : MonoBehaviour {
     {
         curOrbitObj.isContainsPlayer = false;
         curOrbitNum += dir;
-        curOrbitObj = SuperManager.Instance.GameManager.Orbits[curOrbitNum-1];
+        curOrbitObj = SuperManager.Instance.GameManager.ActiveOrbits[curOrbitNum-1];
         curOrbitObj.isContainsPlayer = true;
     }
 
@@ -109,7 +109,7 @@ public class Player : MonoBehaviour {
 
         if(dir == 1)
         {
-            if (curOrbitNum - 1 == SuperManager.Instance.GameManager.Orbits.Count-1)
+            if (curOrbitNum == SuperManager.Instance.GameManager.ActiveOrbits.Count)
                 return;
         }
         else
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour {
         {
             StopCoroutine(move);
         }
-            move = Move(SuperManager.Instance.GameManager.Orbits[curOrbitNum-1]);
+        move = Move(SuperManager.Instance.GameManager.ActiveOrbits[curOrbitNum-1]);
         StartCoroutine(move);
 
     }

@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour {
         //distToScreenCorner = 100;
 
         //StartOrbit = Instantiate(StartOrbitPrefab);
-        ActiveOrbits.Add(StartOrbit);
+        //ActiveOrbits.Add(StartOrbit);
 
         //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
 
@@ -125,7 +125,9 @@ public class GameManager : MonoBehaviour {
 
     void DrawOrbits(float extraRad)
     {
-
+        ActiveOrbits.Clear();
+        if(isFirstSession)
+            ActiveOrbits.Add(StartOrbit);
         switch (OrbitsCount)
         {
             case 3:
@@ -142,21 +144,24 @@ public class GameManager : MonoBehaviour {
                 break;
         }
 
+        print(OrbitsCount);
         for (int i = 1; i <= OrbitsCount; i++)
         {
             //Orbits[i].DrawOrbit();
-            ActivateOrbit(true, i);
+            ActivateOrbit(i);
             Orbits[i].MoveOrbit(Radiuses[i] + extraRad);
-            Orbits[i].OrbitNum = i+1;
+            Orbits[i].OrbitNum = isFirstSession ? i+1 : i; //Т.к. в начале у нас есть стартовая орбита, а потом она создается с нуля
 
             Orbits[i].PlanetSpeed = SuperManager.Instance.DifficultyManager.GetOrbitSpeed();
             Orbits[i].Planet = GetPlanet();
+            Orbits[i].isContainsPlanet = true;
             var planet = Orbits[i].Planet;
             planet.transform.SetParent(Orbits[i].transform);
             planet.SetActive(true);
             planet.GetComponent<Planet>().Orbit = Orbits[i].OrbitNum;
 
         }
+        isFirstSession = false;
 
     }
 
@@ -168,13 +173,19 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    void ActivateOrbit(bool on, int num)
+    void ActivateOrbit(int num)
     {
-        Orbits[num].mLineRenderer.enabled = on;
-        if (on)
-            ActiveOrbits.Add(Orbits[num]);
-        else
-            ActiveOrbits.Remove(Orbits[num]);
+        print(Orbits[num].name);
+        Orbits[num].mLineRenderer.enabled = true;
+        Orbits[num].IsActive = true;
+        ActiveOrbits.Add(Orbits[num]);
+    }
+
+    void DeactivateOrbit(Orbit orb)
+    {
+        orb.mLineRenderer.enabled = false;
+        orb.IsActive = false;
+        ActiveOrbits.Remove(orb);
     }
 
     void AddOrbits_Old(float extraRad)
@@ -263,7 +274,6 @@ public class GameManager : MonoBehaviour {
         for (int i = 0; i < rad.Length; i++)
         {
             Radiuses[i] = rad[i];
-            print(rad[i]);
         }
     }
 
@@ -271,7 +281,6 @@ public class GameManager : MonoBehaviour {
     {
         foreach(Orbit orb in ActiveOrbits)
         {
-            print(distBetweenOrbits);
             orb.Radius = MinOrbitRadius +  distBetweenOrbits * (orb.OrbitNum - (removedNum < orb.OrbitNum ? 1 : 0));
         }
     }
@@ -288,7 +297,7 @@ public class GameManager : MonoBehaviour {
             orbit.Planet.SetActive(false);
             Planets.Add(orbit.Planet.GetComponent<Planet>());
         }
-        ActivateOrbit(false, orbitNum - 1);
+        DeactivateOrbit(orbit);
         //ActiveOrbits.RemoveAt(orbitNum-1);
         orbit.StopAllCoroutines();
         //Destroy(orbit.gameObject);
@@ -403,7 +412,7 @@ public class GameManager : MonoBehaviour {
     IEnumerator ChangeLevel()
     {
         IsLevelUping = true;
-        StartOrbit = Orbits[0];
+        StartOrbit = ActiveOrbits[0];
         yield return new WaitForSeconds(1f);
         if (cameraShake != null)
             StopCoroutine(cameraShake);
@@ -415,9 +424,6 @@ public class GameManager : MonoBehaviour {
 
     void OnLevelUp()
     {
-        ///Difficulty
-        //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
-
         ///Orbits
         StartOrbit.Planet.transform.SetParent(PlanetPool);
         StartOrbit.Planet.SetActive(false);
@@ -434,9 +440,9 @@ public class GameManager : MonoBehaviour {
         //}
         //Camera.main.orthographicSize = startCamSize;
 
-        curCamSize = startCamSize;
-        distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / Orbits.Count;
+        //curCamSize = startCamSize;
         OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
+        distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / OrbitsCount;
         CurPlanetCount = OrbitsCount;
         DrawOrbits(70);
         for (int i = 0; i < Orbits.Count; i++)

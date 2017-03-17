@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Orbit : MonoBehaviour {
+
+    public Transform CrystallPivotPrefab;
+
     [Header("Draw Settings")]
     public float ThetaScale = 0.03f;        //Set lower to add more points
     public Material LineMaterial;
@@ -10,6 +13,7 @@ public class Orbit : MonoBehaviour {
     public float Radius;
     public LineRenderer mLineRenderer;
     public float CurRadius;
+    public bool IsActive = false;
 
     [Space]
     [Header("Planet Settings")]
@@ -35,6 +39,11 @@ public class Orbit : MonoBehaviour {
         if(OrbitNum == 1)
             Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
         mLineRenderer = GetComponent<LineRenderer>();
+
+        if (CompareTag("StartOrbit"))
+            return;
+        CrystallPivot = Instantiate(CrystallPivotPrefab, transform);
+        Crystall = CrystallPivot.FindChild("Crystall");
     }
 
     private void Start()
@@ -68,7 +77,7 @@ public class Orbit : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if (!isContainsPlanet && !isContainsPlayer && !isContainsCrystall && mLineRenderer.enabled)
+        if (!isContainsPlanet && !isContainsPlayer && !isContainsCrystall && IsActive)
             SuperManager.Instance.GameManager.RemoveOrbit(OrbitNum);
     }
 

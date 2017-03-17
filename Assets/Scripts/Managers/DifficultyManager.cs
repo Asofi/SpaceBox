@@ -79,7 +79,7 @@ public class DifficultyManager : MonoBehaviour {
         asteroidSpawnTime = MaxAsteroidSpawnTime;
         MinAsteroidSpeed = originMinSpeed;
         MaxAsteroidSpeed = originMaxSpeed;
-        orbitsCount = 5;
+        orbitsCount = 3;
         curFrontTime = MinFrontTime;
         curChanceToStartFront = MinChanceToStartFront;
 
