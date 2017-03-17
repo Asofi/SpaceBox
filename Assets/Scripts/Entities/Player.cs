@@ -40,15 +40,6 @@ public class Player : MonoBehaviour {
         PlayerPivot.Rotate(newPos);
         transform.localPosition = new Vector3(0, 0, CubeOrbitR);
 
-        //if (SwipeManager.Instance.IsSwiping(SwipeDirection.Up))
-        //    StartMoving(-1);
-        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Down))
-        //    StartMoving(1);
-        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Left))
-        //    ChangeDirection(false);
-        //else if (SwipeManager.Instance.IsSwiping(SwipeDirection.Right))
-        //    ChangeDirection(true);
-
     }
 
     public void ChangeDirection()
@@ -126,8 +117,8 @@ public class Player : MonoBehaviour {
             if (curOrbitNum - 1 == 0)
                 return;
         }
-
         UdpateCurOrbit(dir);
+
         if(move != null)
         {
             StopCoroutine(move);
@@ -173,6 +164,8 @@ public class Player : MonoBehaviour {
                 break;
             case "Crystall":
                 Crystall crystall = collision.gameObject.GetComponent<Crystall>();
+                if (crystall.ParentOrbit.OrbitNum != curOrbitNum)
+                    return;
                 collision.gameObject.SetActive(false);
                 crystall.ParentOrbit.isContainsCrystall = false;
                 EventManager.AddCrystall();

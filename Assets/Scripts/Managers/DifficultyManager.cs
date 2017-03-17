@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DifficultyManager : MonoBehaviour {
 
@@ -31,6 +32,20 @@ public class DifficultyManager : MonoBehaviour {
     public Transform AsteroidPrefab;
     private float timeBetweenSpawnAsteroids;
     public float AsteroidSpawnRadius;
+
+    [Header("FrontSectors")]
+    public Vector2[] FrontSectors;
+    [Range(0, 1)] public float MinChanceToStartFront = 0f;
+    [Range(0, 1)] public float MaxChanceToStartFront = 0.3f;
+    private float curChanceToStartFront;
+    public float ChanceStep = 0.01f;
+
+    public float FrontTimeStep = 0.1f;
+    public float MinFrontTime = 1;
+    public float MaxFrontTime = 5;
+    private float curFrontTime;
+
+    public Image[] FrontIndicators;
 
     [Space]
     [Header("Resize")]
@@ -64,19 +79,24 @@ public class DifficultyManager : MonoBehaviour {
         asteroidSpawnTime = MaxAsteroidSpawnTime;
         MinAsteroidSpeed = originMinSpeed;
         MaxAsteroidSpeed = originMaxSpeed;
-        orbitsCount = 3;
+        orbitsCount = 5;
+        curFrontTime = MinFrontTime;
+        curChanceToStartFront = MinChanceToStartFront;
 
         orbitCurSpeed = OrbitMinSpeed;
 
         ChangeSizes();
 
         StartCoroutine(SpawnAsteroids());
+        StartCoroutine(EventsTimer());
         
     }
 
     void OnGameOver()
     {
         StopAllCoroutines();
+        foreach (Image img in FrontIndicators)
+            img.gameObject.SetActive(false);
     }
 
     void OnLevelUp()
@@ -95,6 +115,10 @@ public class DifficultyManager : MonoBehaviour {
 
         orbitCurSpeed.x = Mathf.Clamp(orbitCurSpeed.x + OrbitSpeedStep, OrbitMinSpeed.x, OrbitMaxSpeed.x);
         orbitCurSpeed.y = Mathf.Clamp(orbitCurSpeed.y + OrbitSpeedStep, OrbitMinSpeed.y, OrbitMaxSpeed.y);
+
+        curFrontTime = Mathf.Clamp(curFrontTime + FrontTimeStep, MinFrontTime, MaxFrontTime);
+
+        curChanceToStartFront = Mathf.Clamp(curChanceToStartFront + ChanceStep, MinChanceToStartFront, MaxChanceToStartFront);
     }
 
     public float GetAsteroidSpeed()
@@ -137,5 +161,37 @@ public class DifficultyManager : MonoBehaviour {
 
         }
 
+    }
+
+    IEnumerator AsteroidFront(float time, int frontSector)
+    {
+        FrontIndicators[frontSector].gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        FrontIndicators[frontSector].gameObject.SetActive(false);
+
+        float t = 0;
+        while (t < time)
+        {
+            t += 0.2f;
+            yield return new WaitForSeconds(0.2f);
+            if (!SuperManager.Instance.GameManager.IsLevelUping)
+            {
+                var pos = Math.RandomCircle(AsteroidSpawnRadius, FrontSectors[frontSector]);
+                EZ_Pooling.EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
+            }
+
+        }
+    }
+
+    IEnumerator EventsTimer()
+    {
+        while (true)
+        {
+            var num = Random.Range(0, 4);
+            yield return new WaitForSeconds(2);
+            if (Random.value < curChanceToStartFront && !SuperManager.Instance.GameManager.IsLevelUping)
+                StartCoroutine(AsteroidFront(curFrontTime, num));
+        }
+        
     }
 }

@@ -19,13 +19,12 @@ public class GameManager : MonoBehaviour {
     public List<Planet> Planets;
     public List<Orbit> Orbits;
     public int OrbitsCount;
-    [HideInInspector]
     public int CurPlanetCount;
-    [HideInInspector]
     public int CurCrystallsCount = 0;
     public float MinOrbitRadius;
+    public float MaxOrbitRadius;
     public float DistanceToFirstOrbit;
-    private float[] Radiuses;
+    public float[] Radiuses = new float[6];
     public float[] Radiuses3;
     public float[] Radiuses4;
     public float[] Radiuses5;
@@ -63,6 +62,9 @@ public class GameManager : MonoBehaviour {
 
     public bool isFirstSession = true;
 
+    public LayerMask MaskForCamera;
+
+
 
     void Start()
     {
@@ -75,13 +77,25 @@ public class GameManager : MonoBehaviour {
         EventManager.OnLevelUp += OnLevelUp;
         DefineScreenBorders();
 
-        Radiuses = new float[6];
+        //Radiuses = new float[6];
 
-        startCamSize = 60 - ((Planets.Count - OrbitsCount) * 8);
-        curCamSize = startCamSize;
+        //startCamSize = 60 - ((Planets.Count - OrbitsCount) * 8);
+        //curCamSize = startCamSize;
         originCamPos = Camera.main.transform.localPosition;
 
-        distToScreenCorner = Camera.main.ScreenToWorldPoint(Vector2.zero).z;
+
+
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Vector2.zero);
+
+        if (Physics.Raycast(ray, out hit, MaskForCamera))
+        {
+            distToScreenCorner = hit.point.z;
+            print(distToScreenCorner);
+        }
+
+        MaxOrbitRadius = distToScreenCorner;
+
         //distToScreenCorner = 100;
 
         StartOrbit = Instantiate(StartOrbitPrefab);
@@ -89,26 +103,14 @@ public class GameManager : MonoBehaviour {
 
         //timeBetweenSpawnAsteroids = SuperManager.Instance.DifficultyManager.GetAsteroidSpawnTime();
 
+        //var horzExtent = Camera.main.orthographicSize * Screen.width / Screen.height;
+        //print(horzExtent);
+
         Radiuses3 = CalculateRadiuses(3);
         Radiuses4 = CalculateRadiuses(4);
         Radiuses5 = CalculateRadiuses(5);
 
     }
-
-    //IEnumerator SpawnAsteroids()
-    //{
-    //    while (true)
-    //    {
-    //        yield return new WaitForSeconds(timeBetweenSpawnAsteroids);
-    //        if (!IsLevelUping)
-    //        {
-    //            var pos = Math.RandomCircle(AsteroidSpawnRadius);
-    //            EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
-    //        }
-
-    //    }
-
-    //}
 
     static void DefineScreenBorders()
     {
@@ -125,6 +127,23 @@ public class GameManager : MonoBehaviour {
         Orbit prevOrbit = StartOrbit;
         if (extraRad == 0)
             Radiuses[0] = prevOrbit.Radius;
+        print(OrbitsCount);
+        switch (OrbitsCount)
+        {
+            case 3:
+                RewriteRadiuses(Radiuses3);
+                //Radiuses = Radiuses3;
+                break;
+            case 4:
+                RewriteRadiuses(Radiuses4);
+                //Radiuses = Radiuses4;
+                break;
+            case 5:
+                RewriteRadiuses(Radiuses5);
+                //Radiuses = Radiuses5;
+                break;
+        }
+
         for (int i = 0; i < OrbitsCount; i++)
         {
 
@@ -136,41 +155,30 @@ public class GameManager : MonoBehaviour {
             var planet = orbitScript.Planet;
             planet.transform.SetParent(orbit);
             planet.SetActive(true);
-            if (extraRad == -0)
-            {
-                if (i == 0)
-                {
-                    radius = prevOrbit.Radius + distBetweenOrbits;
-                }
-                else
-                {
-                    radius = Radiuses[1] + distBetweenOrbits * i;
-                }
-              }
-            else
-            {
-                switch (OrbitsCount)
-                {
-                    case 3:
-                        RewriteRadiuses(Radiuses3);
-                        //Radiuses = Radiuses3;
-                        break;
-                    case 4:
-                        RewriteRadiuses(Radiuses4);
-                        //Radiuses = Radiuses4;
-                        break;
-                    case 5:
-                        RewriteRadiuses(Radiuses5);
-                        //Radiuses = Radiuses5;
-                        break;
-                }
-                radius = Radiuses[i];
-            }
+
+
+
+            //if (extraRad == 0)
+            //{
+            //    if (i == 0)
+            //    {
+            //        radius = prevOrbit.Radius + distBetweenOrbits;
+            //    }
+            //    else
+            //    {
+            //        radius = Radiuses[1] + distBetweenOrbits * i;
+            //    }
+            //}
+            //else
+            //{
+
+                radius = Radiuses[i+1];
+            //}
 
 
             Orbits.Add(orbitScript);
-            if (!IsLevelUping)
-                Radiuses[i+1] = radius;
+            //if (!IsLevelUping)
+                //Radiuses[i+1] = radius;
 
             radius += extraRad;
             orbitScript.Radius = radius;
@@ -188,17 +196,19 @@ public class GameManager : MonoBehaviour {
     float[] CalculateRadiuses(int count)
     {
         float[] radiuses = new float[count+1];
-        float distBetweenOrbits = (distToScreenCorner - MinOrbitRadius) / count;
+        float distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / count;
         for (int i = 0; i <= count; i++)
-            radiuses[i] = MinOrbitRadius + distBetweenOrbits * i;
+            radiuses[i] = distBetweenOrbits * i + MinOrbitRadius;
         
         return radiuses;
     }
+
     void RewriteRadiuses(float[] rad)
     {
         for (int i = 0; i < rad.Length; i++)
         {
             Radiuses[i] = rad[i];
+            print(rad[i]);
         }
     }
 
@@ -213,7 +223,7 @@ public class GameManager : MonoBehaviour {
     public void RemoveOrbit(int orbitNum)
     {
         //StopAllCoroutines();
-        distBetweenOrbits = (distToScreenCorner - MinOrbitRadius) / (Orbits.Count);
+        distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / (Orbits.Count);
 
         var orbit = Orbits[orbitNum-1];
         if(orbit.Planet != null)
@@ -368,7 +378,7 @@ public class GameManager : MonoBehaviour {
         //Camera.main.orthographicSize = startCamSize;
 
         curCamSize = startCamSize;
-        distBetweenOrbits = startDistBetweenOrbits;
+        distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / Orbits.Count;
         OrbitsCount = SuperManager.Instance.DifficultyManager.GetOrbitsCount();
         CurPlanetCount = OrbitsCount;
         AddOrbits(70);
@@ -389,11 +399,12 @@ public class GameManager : MonoBehaviour {
             Orbits.Add(StartOrbit);
         }
         //Camera.main.orthographicSize = startCamSize;
-        distBetweenOrbits = (distToScreenCorner - 10) / OrbitsCount ;
+        distBetweenOrbits = (MaxOrbitRadius - MinOrbitRadius) / OrbitsCount;
         startDistBetweenOrbits = distBetweenOrbits;
         curCamSize = startCamSize;
         CurPlanetCount = OrbitsCount;
         AddOrbits(0);
+        Debug.Break();
         //StartCoroutine(SpawnAsteroids());
 
     }

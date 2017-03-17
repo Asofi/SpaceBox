@@ -9,6 +9,8 @@ public class Crystall : MonoBehaviour {
     public Transform Graphics;
     public Image CircleIndicator;
 
+    public int OrbitNum;
+
     private float speed = 20;
     private int direction = 1;
 
@@ -16,6 +18,7 @@ public class Crystall : MonoBehaviour {
     {
         ParentOrbit = transform.parent.parent.GetComponent<Orbit>();
         //Graphics = transform.FindChild("GameObject").FindChild("Graphics");
+        
         
     }
 
@@ -36,6 +39,7 @@ public class Crystall : MonoBehaviour {
     private void OnEnable()
     {
         EventManager.OnTimerStart += StartDespawnTimer;
+        OrbitNum = ParentOrbit.OrbitNum;
     }
 
     private void OnDisable()

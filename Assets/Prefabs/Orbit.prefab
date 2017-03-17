@@ -210,7 +210,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 7debeea0ee727814babb6a072a9e9664, type: 2}
+  - {fileID: 2100000, guid: ce5f989ea3144c44588ff6945fca032f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -264,6 +264,7 @@ MonoBehaviour:
   ParentOrbit: {fileID: 0}
   Graphics: {fileID: 4953124391825678}
   CircleIndicator: {fileID: 114196601980934686}
+  OrbitNum: 0
 --- !u!114 &114196601980934686
 MonoBehaviour:
   m_ObjectHideFlags: 1

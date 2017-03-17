@@ -49,8 +49,10 @@ public class Orbit : MonoBehaviour {
             return;
         }
 
-        orbitAngle = Random.Range(0, 360);
-        transform.Rotate(Vector3.up, orbitAngle);
+        //TEMP COMMENT
+
+        //orbitAngle = Random.Range(0, 360);
+        //transform.Rotate(Vector3.up, orbitAngle);
     }
 
     private void Update()
@@ -117,7 +119,7 @@ public class Orbit : MonoBehaviour {
 
         CrystallPivot.Rotate(Vector3.up, crystallAngle);
         CrystallPivot.FindChild("Crystall").localPosition = new Vector3(Radius, 0, 0);
-        CrystallPivot.SetParent(transform);
+        //CrystallPivot.SetParent(transform);
         CrystallPivot.gameObject.SetActive(true);
         isContainsCrystall = true;
 
