@@ -69,6 +69,9 @@ public class GameManager : MonoBehaviour {
 
     void Start()
     {
+
+        
+
         EventManager.OnGameStart += OnGameStart;
         EventManager.OnGameOver += OnGameOver;
         EventManager.OnAddScore += OnAddScore;
@@ -476,7 +479,7 @@ public class GameManager : MonoBehaviour {
     void OnGameOver()
     {
         CurCrystallsCount = 0;
-        int count = Orbits.Count;
+        int count = ActiveOrbits.Count;
         for (int i = 0; i< count; i++)
         {
             RemoveOrbit(1);

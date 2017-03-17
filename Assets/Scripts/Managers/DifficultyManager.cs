@@ -29,7 +29,7 @@ public class DifficultyManager : MonoBehaviour {
     public float AsteroidSpawnTimeDecrease = 0.25f;
 
 
-    public Transform AsteroidPrefab;
+    public GameObject AsteroidPrefab;
     private float timeBetweenSpawnAsteroids;
     public float AsteroidSpawnRadius;
 
@@ -156,7 +156,7 @@ public class DifficultyManager : MonoBehaviour {
             if (!SuperManager.Instance.GameManager.IsLevelUping)
             {
                 var pos = Math.RandomCircle(AsteroidSpawnRadius);
-                EZ_Pooling.EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
+                TrashMan.spawn(AsteroidPrefab, pos, Quaternion.identity);
             }
 
         }
@@ -177,7 +177,7 @@ public class DifficultyManager : MonoBehaviour {
             if (!SuperManager.Instance.GameManager.IsLevelUping)
             {
                 var pos = Math.RandomCircle(AsteroidSpawnRadius, FrontSectors[frontSector]);
-                EZ_Pooling.EZ_PoolManager.Spawn(AsteroidPrefab, pos, Quaternion.identity);
+                TrashMan.spawn(AsteroidPrefab, pos, Quaternion.identity);
             }
 
         }

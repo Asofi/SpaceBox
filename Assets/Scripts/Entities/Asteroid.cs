@@ -31,7 +31,7 @@ public class Asteroid : MonoBehaviour {
         mRigid = GetComponent<Rigidbody>();
     }
 
-    void OnSpawned()
+    void OnEnable()
     {
         mRenderer.enabled = true;
         GetComponent<Collider>().enabled = true;
@@ -46,7 +46,7 @@ public class Asteroid : MonoBehaviour {
 
     }
 
-    void OnDespawned()
+    void OnDisable()
     {
         StopAllCoroutines();
     }
@@ -96,7 +96,8 @@ public class Asteroid : MonoBehaviour {
         GetComponent<Collider>().enabled = false;
         mRigid.velocity = Vector3.zero;
         yield return new WaitForSeconds(time);
-        EZ_Pooling.EZ_PoolManager.Despawn(transform);
+        //EZ_Pooling.EZ_PoolManager.Despawn(transform);
+        TrashMan.despawn(gameObject);
         deadPlaying = false;
     }
 

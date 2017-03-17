@@ -576,11 +576,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
-    - target: {fileID: 114636873175027828, guid: 258e78125f0fb4b4ebcc312ce63a3e09,
-        type: 2}
-      propertyPath: CurRadius
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 258e78125f0fb4b4ebcc312ce63a3e09, type: 2}
   m_IsPrefabParent: 0
@@ -1555,170 +1550,12 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8ea2c6e2add2cf74090f2670893dbd3d, type: 2}
   m_IsPrefabParent: 0
---- !u!1 &401239912 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1171219839197844, guid: 258e78125f0fb4b4ebcc312ce63a3e09,
-    type: 2}
-  m_PrefabInternal: {fileID: 309578855}
 --- !u!114 &401239913 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114636873175027828, guid: 258e78125f0fb4b4ebcc312ce63a3e09,
     type: 2}
   m_PrefabInternal: {fileID: 309578855}
   m_Script: {fileID: 11500000, guid: fce06ce7d774edd46bf1649a9d37f2ce, type: 3}
---- !u!120 &401239914
-LineRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 401239912}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 0
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 82eaec97ae42bea47b3e385c85ac14b9, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  m_Parameters:
-    serializedVersion: 2
-    widthMultiplier: 13
-    widthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 2
-        time: 0
-        value: 0.02
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-      - serializedVersion: 2
-        time: 1
-        value: 0.02
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    colorGradient:
-      key0:
-        serializedVersion: 2
-        rgba: 4294967295
-      key1:
-        serializedVersion: 2
-        rgba: 4294967295
-      key2:
-        serializedVersion: 2
-        rgba: 0
-      key3:
-        serializedVersion: 2
-        rgba: 0
-      key4:
-        serializedVersion: 2
-        rgba: 0
-      key5:
-        serializedVersion: 2
-        rgba: 0
-      key6:
-        serializedVersion: 2
-        rgba: 0
-      key7:
-        serializedVersion: 2
-        rgba: 0
-      ctime0: 0
-      ctime1: 65535
-      ctime2: 0
-      ctime3: 0
-      ctime4: 0
-      ctime5: 0
-      ctime6: 0
-      ctime7: 0
-      atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
-      atime5: 0
-      atime6: 0
-      atime7: 0
-      m_Mode: 0
-      m_NumColorKeys: 2
-      m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
-    alignment: 0
-    textureMode: 0
-  m_UseWorldSpace: 1
 --- !u!1 &434100542
 GameObject:
   m_ObjectHideFlags: 0
@@ -3604,7 +3441,7 @@ MonoBehaviour:
   MinAsteroidSpawnTime: 1
   MaxAsteroidSpawnTime: 5
   AsteroidSpawnTimeDecrease: 0.2
-  AsteroidPrefab: {fileID: 4239056999696574, guid: 6f8e4043c1968cb4ea86ad2599e894bd,
+  AsteroidPrefab: {fileID: 1142144408915782, guid: 6f8e4043c1968cb4ea86ad2599e894bd,
     type: 2}
   AsteroidSpawnRadius: 95
   FrontSectors:
@@ -5997,7 +5834,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2076211651}
-  - component: {fileID: 2076211652}
+  - component: {fileID: 2076211653}
   m_Layer: 10
   m_Name: Pools
   m_TagString: Untagged
@@ -6019,7 +5856,7 @@ Transform:
   m_Father: {fileID: 1908171837}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2076211652
+--- !u!114 &2076211653
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -6027,27 +5864,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 2076211650}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1701af0df6c96fa45bfa3662b319541b, type: 3}
+  m_Script: {fileID: 11500000, guid: 9ddf7a5150a474960a78be74651f1a64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabPoolOptions:
-  - prefabTransform: {fileID: 4239056999696574, guid: 6f8e4043c1968cb4ea86ad2599e894bd,
-      type: 2}
-    instancesToPreload: 1
-    isPoolExpanded: 1
-    showDebugLog: 0
-    poolCanGrow: 0
-    cullDespawned: 0
-    cullAbove: 10
-    cullDelay: 2
-    cullAmount: 1
-    enableHardLimit: 0
-    hardLimit: 10
-    recycle: 0
-  showDebugLog: 0
-  isRootExpanded: 1
-  autoAddMissingPrefabPool: 0
-  usePoolManager: 1
+  recycleBinCollection:
+  - prefab: {fileID: 1142144408915782, guid: 6f8e4043c1968cb4ea86ad2599e894bd, type: 2}
+    instancesToPreallocate: 20
+    instancesToAllocateIfEmpty: 1
+    imposeHardLimit: 0
+    hardLimit: 5
+    cullExcessPrefabs: 0
+    instancesToMaintainInPool: 5
+    cullInterval: 10
+    automaticallyRecycleParticleSystems: 0
+    persistBetweenScenes: 0
+  - prefab: {fileID: 1542078759172698, guid: 8ea2c6e2add2cf74090f2670893dbd3d, type: 2}
+    instancesToPreallocate: 6
+    instancesToAllocateIfEmpty: 1
+    imposeHardLimit: 0
+    hardLimit: 5
+    cullExcessPrefabs: 0
+    instancesToMaintainInPool: 5
+    cullInterval: 10
+    automaticallyRecycleParticleSystems: 0
+    persistBetweenScenes: 0
+  cullExcessObjectsInterval: 10
+  persistBetweenScenes: 0
+  transform: {fileID: 0}
 --- !u!1 &2084540379
 GameObject:
   m_ObjectHideFlags: 0
