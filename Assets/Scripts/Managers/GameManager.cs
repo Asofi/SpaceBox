@@ -124,6 +124,33 @@ public class GameManager : MonoBehaviour {
 
     void AddOrbits(float extraRad)
     {
+
+        switch (OrbitsCount)
+        {
+            case 3:
+                RewriteRadiuses(Radiuses3);
+                //Radiuses = Radiuses3;
+                break;
+            case 4:
+                RewriteRadiuses(Radiuses4);
+                //Radiuses = Radiuses4;
+                break;
+            case 5:
+                RewriteRadiuses(Radiuses5);
+                //Radiuses = Radiuses5;
+                break;
+        }
+
+        for (int i = 1; i < OrbitsCount; i++)
+        {
+            //Orbits[i].DrawOrbit();
+            Orbits[i].MoveOrbit(Radiuses[i]);
+        }
+
+        }
+
+    void AddOrbits_Old(float extraRad)
+    {
         Orbit prevOrbit = StartOrbit;
         if (extraRad == 0)
             Radiuses[0] = prevOrbit.Radius;

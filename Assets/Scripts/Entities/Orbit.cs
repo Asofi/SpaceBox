@@ -33,6 +33,7 @@ public class Orbit : MonoBehaviour {
         //PlanetSpeed = Random.Range(10, 35);
         PlanetDirection = /*Random.value < 0.5 ? 1 : -1;*/ -1;
         Radius = SuperManager.Instance.GameManager.MinOrbitRadius;
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     private void Start()
@@ -43,11 +44,11 @@ public class Orbit : MonoBehaviour {
             DrawOrbit();
         }
 
-        if (Planet == null)
-        {
-            isContainsPlanet = false;
-            return;
-        }
+        //if (Planet == null)
+        //{
+        //    isContainsPlanet = false;
+        //    return;
+        //}
 
         //TEMP COMMENT
 
